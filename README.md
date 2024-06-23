@@ -17,12 +17,10 @@
     node ./dist/main.js
     ```
 
-### Notes
-1) Stocks API: [Alphavantage](https://www.alphavantage.co/documentation/)
-1) Stock information
-1) Login password for user/(alternatively OTP instead of login/pass)
-1) Stock watchlist (multiple if possible)
-1) Maybe Show best/worst stocks on home page (decide terms for best and worst)
-1) Recommend stocks based on a few popular parameters (formula can be found on Yahoo finance and other sites).
-1) [NodeMailer](https://www.w3schools.com/nodejs/nodejs_email.asp)
 
+
+### Notes
+
+1) WebSockets [npm WS](https://www.npmjs.com/package/ws)
+1) End to end encryption [link](https://www.codementor.io/@behnamanjomruz/creating-end-to-end-encryption-using-private-and-public-key-in-javascript-22ac0ohx4h)
+1) [NodeMailer](https://www.w3schools.com/nodejs/nodejs_email.asp)
