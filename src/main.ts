@@ -14,10 +14,19 @@ app.use(express.static('public'))
 
 // Route for home page
 app.get("/", (req: Request, res: Response) => {
-  res.render('index', {
-    title: 'Home Page',
-    message: 'Home page'
-  });
+  res.render('index', {});
+});
+
+app.get("/join", (req: Request, res: Response) => {
+  res.render('join', {});
+});
+
+app.get("/create", (req: Request, res: Response) => {
+  res.render('create', {});
+});
+
+app.get("/chat", (req: Request, res: Response) => {
+  res.render('chat',{});
 });
 
 // Start Process
