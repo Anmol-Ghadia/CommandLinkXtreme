@@ -1,7 +1,4 @@
 import express, { Express, Request, Response } from "express";
-// import dotenv from "dotenv";
-
-// dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -33,3 +30,37 @@ app.get("/chat", (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
+
+
+
+console.log("Websockets begin")
+import { WebSocketServer } from 'ws';
+
+// Store connections in a Map with custom IDs
+let clients = new Map();
+let nextClientId = 1;
+
+const wss = new WebSocketServer({ port: 8080 });
+console.log("WebSocket Server Live on ws://localhost:8080")
+
+wss.on('connection', function connection(ws) {
+  
+  const clientId = nextClientId++;
+  clients.set(clientId, ws);
+  
+  
+  ws.on('error', console.error);
+
+  ws.on('message', function messageIn(data) {
+    console.log(`(${clientId}) sent: (${data})`);
+  });
+
+  ws.on('close', function close() {
+    clients.delete(clientId);
+    console.log(`(${clientId}) closed connection`)
+  })
+});
+
+setInterval(()=>{
+  console.log(`Current clients: ${clients.size}`);
+},10*1000)

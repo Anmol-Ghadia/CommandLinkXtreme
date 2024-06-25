@@ -2,6 +2,7 @@ html
     head 
         title Command Link Extreme
         link(rel="stylesheet", href="/styles/landing.css") 
+        script(src="/script/create.js") 
     body
         header 
             h1 Command Link Extreme
@@ -18,7 +19,7 @@ html
             label(for="emailN")
                 input(type="radio" name="email" id="emailN" value="no")
                 | No
-            button#createSession(onclick = "window.location.href = '/chat'") Create
+            button#createSession(onclick="goToChat()") Create
             h2 Join an existing session
             label(for="session") Session ID
             input(type="text" name="session" id="session" required)
