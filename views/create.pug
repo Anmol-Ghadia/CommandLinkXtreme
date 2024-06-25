@@ -1,0 +1,29 @@
+html 
+    head 
+        title Command Link Extreme
+        link(rel="stylesheet", href="/styles/landing.css") 
+    body
+        header 
+            h1 Command Link Extreme
+            p Start a new conversation or go back to landing page.
+        main  
+            h2 Create a new session
+
+            label(for="alias") Alias
+            input(type="text" name="alias" id="alias" required)
+            label(for="email") Send email link?
+            label(for="emailY")
+                input(type="radio" name="email" id="emailY" value="yes")
+                | Yes
+            label(for="emailN")
+                input(type="radio" name="email" id="emailN" value="no")
+                | No
+            button#createSession(onclick = "window.location.href = '/chat'") Create
+            h2 Join an existing session
+            label(for="session") Session ID
+            input(type="text" name="session" id="session" required)
+            label(for="alias") Alias
+            input(type="text" name="alias" id="alias" required)
+            button#joinSession(onclick  = "window.location.href = '/join'") Join
+            h2 Go back to landing page
+            button#startConversation(onclick="window.location.href='/'") Back to landing page
