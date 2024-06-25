@@ -51,7 +51,8 @@ A user can bypass the email communication and join the session using session-id
     1) once connected, exchange keys for encryption
     1) now the user can chat
     1) all chats should be encrypted before sending
-
+1) Add database with SQLlite or oracle sql
+1) 
 
 ### Developer Instructions
 
@@ -69,8 +70,7 @@ A user can bypass the email communication and join the session using session-id
     node ./dist/main.js
     ```
 ### Notes
-1) Timeout?
-1) 
+1) WebSockets on browser [MDN](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 1) WebSockets [npm WS](https://www.npmjs.com/package/ws)
 1) End to end encryption [link](https://www.codementor.io/@behnamanjomruz/creating-end-to-end-encryption-using-private-and-public-key-in-javascript-22ac0ohx4h)
 1) [NodeMailer](https://www.w3schools.com/nodejs/nodejs_email.asp)
