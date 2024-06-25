@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "# Command Link Xtreme"
 An app that allows two users to communicate securely with end-to-end encryption. The chats are not retained anywhere making the communication more secure.
 
@@ -52,9 +51,6 @@ A user can bypass the email communication and join the session using session-id
     1) once connected, exchange keys for encryption
     1) now the user can chat
     1) all chats should be encrypted before sending
-=======
-"# ChatApp" 
->>>>>>> 66b470665701d02bb3a149a928728bd475d15590
 
 
 ### Developer Instructions
