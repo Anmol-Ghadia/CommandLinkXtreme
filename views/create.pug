@@ -21,10 +21,6 @@ html
                 | No
             button#createSession(onclick="goToChat()") Create
             h2 Join an existing session
-            label(for="session") Session ID
-            input(type="text" name="session" id="session" required)
-            label(for="alias") Alias
-            input(type="text" name="alias" id="alias" required)
-            button#joinSession(onclick  = "window.location.href = '/join'") Join
+            button#joinSession(onclick  = "window.location.href = '/join'") Join Session
             h2 Go back to landing page
             button#startConversation(onclick="window.location.href='/'") Back to landing page

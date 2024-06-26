@@ -1,0 +1,17 @@
+html 
+    head 
+        title Command Link Extreme
+        link(rel="stylesheet", href="/styles/landing.css") 
+    body 
+        header 
+            h1 Command Link Extreme
+            p Join an existing session or go back to landing page.
+        main 
+            h2 Join an existing session
+            label(for="session") Session ID
+            input(type="text" name="session" id="input-session-id" required)
+            label(for="alias") Alias
+            input(type="text" name="alias" id="input-alias" required)
+            button#joinSession(onclick= "window.location.href = '/chat'") Join
+            h2 Go back to landing page
+            button#startConversation(onclick="window.location.href='/'") Back to landing page 
