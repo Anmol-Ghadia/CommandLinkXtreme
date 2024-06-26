@@ -1,5 +1,6 @@
 const wsLink = 'ws://localhost:8080';
 let socket;
+let storedId = localStorage.getItem('sessionId');
 
 connectWS();
 
