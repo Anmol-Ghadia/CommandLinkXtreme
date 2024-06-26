@@ -35,24 +35,23 @@ A user can bypass the email communication and join the session using session-id
 
 
 ## Todo
-1) create index page in pug
-1) create index page in express
-1) create create page in pug
-1) create create page in express
 1) create join page in pug
 1) create join page in express
-1) create chat page in pug
-1) create chat page in express
 1) add banner on chat page if invalid session
 1) add javascript to chat page which does the following things:
     1) checks if user has valid session id
-    1) sets up an websocket with the server
+    1) ~~sets up an websocket with the server~~
     1) waits for a user to connect
     1) once connected, exchange keys for encryption
     1) now the user can chat
     1) all chats should be encrypted before sending
-1) Add database with SQLlite or oracle sql
-1) 
+1) Add database: oracle sql
+1) ~~create chat page in pug~~
+1) ~~create chat page in express~~
+1) ~~create index page in pug~~
+1) ~~create index page in express~~
+1) ~~create create page in pug~~
+1) ~~create create page in express~~
 
 ### Developer Instructions
 

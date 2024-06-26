@@ -43,6 +43,8 @@ let nextClientId = 1;
 const wss = new WebSocketServer({ port: 8080 });
 console.log("WebSocket Server Live on ws://localhost:8080")
 
+// wss.on('upgrade',(req,res,))
+
 wss.on('connection', function connection(ws) {
   
   const clientId = nextClientId++;
