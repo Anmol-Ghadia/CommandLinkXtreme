@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import WebSocket from "ws";
 import { WebSocketServer } from 'ws';
 import { AllSessions, SessionClass } from "./session";
+import { sendMail } from "./mailer";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -29,12 +30,23 @@ app.get("/chat", (req: Request, res: Response) => {
   res.render('chat',{});
 });
 
+app.use(express.json());
+
+app.post("/sendMail", async (req: Request, res: Response) => {
+  const { to, text } = req.body;
+  try {
+      await sendMail(to, text);
+      res.status(200).send("Mail sent successfully");
+  } catch (error) {
+      console.error("Failed to send mail:", error);
+      res.status(500).send("Error sending mail");
+  }
+});
+
 // Start Process
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
-
-
 
 // Store connections in a Map with custom IDs
 // let clients = new Map();
