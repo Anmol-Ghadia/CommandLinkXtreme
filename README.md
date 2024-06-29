@@ -30,7 +30,8 @@ A user can bypass the email communication and join the session using session-id
 
 ## Client's communication protocol on web socket
 ### State Diagram
-HERE !!!
+![IMG_0166](https://github.com/Anmol-Ghadia/CommandLinkXtreme/assets/47422194/362950c1-86ef-44b8-853f-b123d7c93fad)
+
 ### Key for diagram
 1) All states are labeled with `S1`, `S2`, ....
 1) All messages sent by this client are labeled `M1`, `M2`, ....
