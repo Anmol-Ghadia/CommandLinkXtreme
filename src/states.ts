@@ -8,7 +8,7 @@ export class Client {
     private clientId: number;
     private alias: string = '';
     private publicKey: string = '';
-    public static nextClientId = 1; 
+    public static nextClientId = 100; 
 
     // generates a unique clientID and other params
     constructor(ws:WebSocket) {
@@ -162,7 +162,7 @@ export class Client {
     }
 
     updateState(newState: 1 | 2 | 3 | 4 | 5) {
-        log(2,'CLIENT',`changed the state of (${this.clientId}) from (${this.currentState})->(${newState})`);
+        log(2,'CLIENT',`changed the state of ${this.alias}(${this.clientId}) from (${this.currentState})->(${newState})`);
         this.currentState = newState;
     }
 
