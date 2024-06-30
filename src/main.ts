@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import { AllSessions, SessionClass } from "./session";
 import { sendMail } from "./mailer";
 import bodyParser from 'body-parser';
+import { log } from './logger';
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -40,20 +41,22 @@ app.post('/send-email', (req: Request, res: Response) => {
   res.status(200).send("Email Sent");
 });
 
-
 // Start Process
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+  log(0,'SERVER',`Server is running at http://localhost:${port}`);
 });
 
 // Store connections in a Map with custom IDs
 // let clients = new Map();
 // let nextClientId = 1;
 
-const wss = new WebSocketServer({ port: 8080 });
-console.log("WebSocket Server Live on ws://localhost:8080")
+const WSPort = 8080;
+const wss = new WebSocketServer({ port: WSPort });
+log(0,'SERVER',`WebSocket Server Live on ws://localhost:${WSPort}`);
 
-// wss.on('upgrade',(req,res,))
+wss.on('upgrade',(req,res)=>{
+  log(1,'CLIENT',`client requested to upgrade connection`);
+})
 const allSessions = new AllSessions();
 let usersWithoutSessionId: number[] = [];
 
