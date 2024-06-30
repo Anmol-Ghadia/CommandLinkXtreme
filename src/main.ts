@@ -3,6 +3,7 @@ import WebSocket from "ws";
 import { WebSocketServer } from 'ws';
 import { AllSessions, SessionClass } from "./session";
 import { sendMail } from "./mailer";
+import bodyParser from 'body-parser';
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -30,18 +31,14 @@ app.get("/chat", (req: Request, res: Response) => {
   res.render('chat',{});
 });
 
-app.use(express.json());
+app.use(bodyParser.json());
 
-app.post("/sendMail", async (req: Request, res: Response) => {
-  const { to, text } = req.body;
-  try {
-      await sendMail(to, text);
-      res.status(200).send("Mail sent successfully");
-  } catch (error) {
-      console.error("Failed to send mail:", error);
-      res.status(500).send("Error sending mail");
-  }
+app.post('/send-email', (req: Request, res: Response) => {
+  const {to, text} = req.body;
+  sendMail(to,text);
+  res.status(200).send("Email Sent");
 });
+
 
 // Start Process
 app.listen(port, () => {

@@ -13,25 +13,20 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const mailOptions = {
-    from: EMAIL_SENDER,
-    to: TEST_RECEIVER,
-    subject: 'You have been invited to a session, click the link below to join',
-    text: 'Link',
-    // html: '<p>HTML content of your email</p>', // Optional
-  };
-  
 
+export const sendMail = (to: string, text: string): void => {
+    const mailOptions = {
+        from: EMAIL_SENDER,
+        to: to,
+        subject: 'You have been invited for a new conversatoin! Click the link below to join.',
+        text: text,
+    };
 
-export const sendMail = async (to: string, text: string) => {
-    try {
-        await transporter.sendMail({
-            from: EMAIL_SENDER,
-            to: to,
-            subject: 'You have been invited to a session, click the link below to join',
-            text: text,
-        });
-    } catch (error) {
-        console.log(error);
-    }
-};
+    transporter.sendMail(mailOptions, (error: any, info: any) => {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+}

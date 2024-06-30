@@ -1,48 +1,53 @@
-//require('dotenv').config();
+document.getElementById('emailY').addEventListener('change', function() {
+  document.getElementById('email-input').disabled = !this.checked;
+});
+
+document.getElementById('emailN').addEventListener('change', function() {
+  document.getElementById('email-input').disabled = this.checked;
+});
 
 async function goToChat() {
-    console.log('entering the chat');
-    const yesOption = document.getElementById("emailY");
-    const email = "rmehta07student@ubc.ca"
-    if (yesOption.checked) {
-        try {
-            const response = await fetch('/sendMail', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ to: email, text: "link" })
-            });
-            if (response.ok) {
-              console.log("Mail Sent");
-              window.location.href = '/chat'; 
-            } else {
-              throw new Error('Failed to send email');
-            }
-        } catch (error) {
-            console.error("Error sending mail:", error);
-        }
-    } 
-    console.log('Chat without email');
-    window.location.href='/chat';
+  console.log('Chat page transfer loaded');
+  window.location.href = '/chat';
 }
 
+async function buttonClick() {
+  const yesOption = document.getElementById("emailY");
+  if (yesOption.checked) {
+      const emailInput = document.getElementById("email-input");
+      const email = emailInput.value;
 
+      if (email === "") {
+          alert("Please enter your email address");
+          return;
+      }
 
-// async function createSessionId() {
-//     try {
-//         const response = await fetch('create-session', {
-//             method: 'POST'
-//         });
-//         const data = await response.json();
-//         console.log('Session ID:', data.sessionId);
-//         return data.sessionId;
-//     } catch (error) {
-//         console.error('Error fetching session ID:', error);
-//     }
-// }
+      const toEmail = email;
+      console.log("Email copied for sending");
+      await send(toEmail);
+  } else {
+      await goToChat();
+  }
+}
 
-// async function storeId() {
-//     const sessionId = await createSessionId();
-//     localStorage.setItem('sessionId', sessionId);
-// }
+async function send(toEmail) {
+  try {
+      const response = await fetch('/send-email', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ to: toEmail })
+      });
+
+      if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+      }
+
+      const data = await response.text();
+      console.log(data);
+      await goToChat();
+  } catch (error) {
+      console.error('Error:', error);
+  }
+}
