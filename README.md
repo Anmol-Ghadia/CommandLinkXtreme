@@ -66,7 +66,7 @@ A user can bypass the email communication and join the session using session-id
     ```js
     message = {
         command: 'JOIN',
-        session: 'session Id',
+        sessionId: 'session Id',
         key: "this client's public key here",
         alias: 'chosen alias of this client'
     }

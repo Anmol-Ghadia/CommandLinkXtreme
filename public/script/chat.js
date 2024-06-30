@@ -12,14 +12,7 @@ function connectWS() {
     socket.addEventListener('open', function (event) {
         console.log('WebSocket connection established.');
         
-        let message = {
-            command: 'JOIN',
-            session: 123,
-            key: "abc",
-            alias: 'alice'
-        }
-
-        socket.send(JSON.stringify(message));
+        sendM1(socket);
     });
 
     socket.addEventListener('message', function (event) {
@@ -50,4 +43,15 @@ function sendWS() {
 function exitPage() {
     closeWS();
     window.location.href = "/";
+}
+
+function sendM1(socket) {
+    let message = {
+        command: 'JOIN',
+        sessionId: 123,
+        key: "abc",
+        alias: 'alice'
+    }
+
+    socket.send(JSON.stringify(message));
 }

@@ -1,7 +1,9 @@
-import { log } from "console";
+import { log } from "./logger";
 import { Client, singlePayloadR3 } from "./states";
-import { BlobOptions } from "buffer";
 
+
+// Is the aggregation of all sessions on the server
+//    only works with session class which is one level below
 export class AllSessions {
     private unInitializedClients: Client[];
     private clientSessionPairs: [Client,Session][];
@@ -18,7 +20,9 @@ export class AllSessions {
     
     // REQUIRES message is well formed
     // upgrades client from unInitialized list initialized
-    promoteClient(clientToPromote:Client,message:message1) {
+    // returns true if not succesfull
+    promoteClient(clientToPromote:Client,message:message1): boolean {
+        clientToPromote.initialize(message.alias,message.key);
         let newList:Client[] = [];
         for (let index = 0; index < this.unInitializedClients.length; index++) {
             const unInitializedClient = this.unInitializedClients[index];
@@ -27,27 +31,29 @@ export class AllSessions {
             }
         }
         this.unInitializedClients = newList;
-        const session = this.getSession(message.sessionID);
-        session.addClient(clientToPromote);
+        const session = this.getSession(message.sessionId);
+        if (!session.addClient(clientToPromote)) return false;
         this.clientSessionPairs.push([clientToPromote,session]);
+        return true;
     }
 
     // gets the session if exists else creates new one
     getSession(sessionId: number): Session {
-        this.clientSessionPairs.forEach((pair)=>{
+        for (let index = 0; index < this.clientSessionPairs.length; index++) {
+            const pair = this.clientSessionPairs[index];   
             if (pair[1].getSessionId() == sessionId) {
+                log(1,'ALL-SESSION',`request to join old session ${sessionId}`);
                 return pair[1];
             }
-        })
+        }
+        log(1,'ALL-SESSION',`request to join new session ${sessionId}`);
         return new Session(sessionId);
     }
 
 }
 
 
-// Represents a single session with all clients 
-//     and their messages with corresponding offset times
-//     from starting
+// Represents a single session with all clients
 export class Session {
 
     protected sessionId:number;
@@ -58,16 +64,24 @@ export class Session {
         this.clients = [];
     }
 
-    addClient(newClient: Client) {
-        newClient.updateState(2);
+    // returns true if the addition succeded
+    addClient(newClient: Client): boolean {
         if (this.clients.length == 0) {
-            newClient.sendR1();
+            if (!newClient.sendR1()) return false;
+        } else if (this.clients.length == 1) { 
+            // Send the other client R4
+            // Send this client R3
+            if (!this.clients[0].sendR4(newClient.getAlias(),newClient.getPublicKey())) return false;
+            if (!newClient.sendR3(this.generateR3Payload())) return false;
         } else {
-            newClient.sendR3(this.generateR3Payload());
-            this.sendR6ToAll(newClient.getPublicKey(),newClient.getAlias());
+            // Send R6 to all clients
+            // Send R3 to this client
+            // if (!newClient.sendR3(this.generateR3Payload())) return false;
+            // if (!this.sendR6ToAll(newClient.getPublicKey(),newClient.getAlias())) return false;
         }
         this.clients.push(newClient);
-        log(1,'SESSION',`added new client (${newClient.getClientId()}) to session: ${this.sessionId}`);
+        log(1,'SESSION',`added new client:${newClient.getAlias()}(${newClient.getClientId()}) to session: ${this.sessionId}`);
+        return true;
     }
 
     private generateR3Payload():singlePayloadR3[] {
@@ -81,8 +95,9 @@ export class Session {
         return payload;
     }
 
-    private sendR6ToAll(publicKey:string,alias:string) {
+    private sendR6ToAll(publicKey:string,alias:string):boolean {
         // TODO !!!
+        return false;
     }
 
     getSessionId():number {
@@ -94,17 +109,18 @@ export class Session {
 
 export type message1 = {
     command: string,
-    sessionID: number,
+    sessionId: number,
     key: string,
     alias: string
 }
 
 export function isMessage1(obj: any): obj is message1 {
+    
     return (
         typeof obj === 'object' &&
         obj !== null &&
         typeof obj.command === 'string' &&
-        typeof obj.sessionID === 'number' &&
+        typeof obj.sessionId === 'number' &&
         typeof obj.key === 'string' &&
         typeof obj.alias === 'string'
     );
