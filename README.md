@@ -1,4 +1,4 @@
-"# Command Link Xtreme"
+# Command Link Xtreme
 An app that allows two users to communicate securely with end-to-end encryption. The chats are not retained anywhere making the communication more secure.
 
 A user can create a new chat session by creating a session on the website and sending an invite link to the other user using email.
@@ -290,7 +290,8 @@ Many states were explicitly stated in `Scenario 1`, but in practice they would b
 |      24 | C2 sends 'EXIT' to S            | -    | Exit | -    |
 
 ### State diagram with Commands
-HERE !!!
+![State Diagram](https://github.com/Anmol-Ghadia/CommandLinkXtreme/assets/47422194/08575023-1607-4df7-9509-98724ad83e89)
+
 
 ## Features to work on in the future
 1) Timeout for session as selected by user
