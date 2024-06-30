@@ -11,6 +11,15 @@ function connectWS() {
     // WebSocket event listeners
     socket.addEventListener('open', function (event) {
         console.log('WebSocket connection established.');
+        
+        let message = {
+            command: 'JOIN',
+            session: 123,
+            key: "abc",
+            alias: 'alice'
+        }
+
+        socket.send(JSON.stringify(message));
     });
 
     socket.addEventListener('message', function (event) {
@@ -24,6 +33,7 @@ function connectWS() {
     socket.addEventListener('error', function (event) {
         console.error('WebSocket encountered an error:', event);
     });
+
 }
 
 function closeWS() {

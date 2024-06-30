@@ -177,7 +177,7 @@ A user can bypass the email communication and join the session using session-id
     this message is received from the server when the client is waiting for another user to join and a user finally joins
     ```js
     message = {
-        command: 'JOIN'
+        command: 'JOIN',
         alias: 'alias of the client new client',
         key: 'public key of the new client'
     }
@@ -224,6 +224,13 @@ A user can bypass the email communication and join the session using session-id
     message = {
         command: 'ERRO',
         message: 'description of error'
+    }
+    ```
+1) Server can send a plain text message as notification at any time to display to the user. It should be in the following format
+    ```js
+    message = {
+        command: 'S-MG',
+        message: 'plain text notification here'
     }
     ```
 
