@@ -226,6 +226,8 @@ message = {
 1) ~~create index page in express~~
 1) ~~create create page in pug~~
 1) ~~create create page in express~~
+1) ~~nodemailer implementation~~
+1) implement link generatoin for the chat for nodemailer
 
 ### Developer Instructions
 
