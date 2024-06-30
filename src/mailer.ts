@@ -6,7 +6,7 @@ const EMAIL_PASS = process.env.EMAIL_PASS;
 const TEST_RECEIVER = process.env.TEST_RECEIVER;
 
 const transporter = nodemailer.createTransport({
-    service: 'outlook',
+    service: 'outlook', 
     auth: {
         user: EMAIL_SENDER,
         pass: EMAIL_PASS,

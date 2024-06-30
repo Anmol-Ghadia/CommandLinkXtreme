@@ -34,7 +34,8 @@ app.get("/chat", (req: Request, res: Response) => {
 app.use(bodyParser.json());
 
 app.post('/send-email', (req: Request, res: Response) => {
-  const {to, text} = req.body;
+  const {to} = req.body;
+  const text = "You have been invited for a new conversatoin! Click the link below to join.";
   sendMail(to,text);
   res.status(200).send("Email Sent");
 });
