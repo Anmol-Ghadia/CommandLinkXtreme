@@ -70,7 +70,7 @@ wss.on('connection', function connection(ws: WebSocket) {
 	let client = new Client(ws);
 	ALLSESSIONS.addClient(client);
 
-	console.log("new user connected");
+	log(1,'CLIENT',`new client joined, id assigned: ${client.getClientId()}`);
 
 	ws.on('error', console.error);
 

@@ -329,6 +329,13 @@ Many states were explicitly stated in `Scenario 1`, but in practice they would b
 
 ### Developer Instructions
 
+1) Make `.env` file in the root of project directory.
+    ```py
+    EMAIL_SENDER=# email id that server will use to notify users
+    EMAIL_PASS=# password of the email id in above line
+    LOG_LEVEL=# level of logging, defaults to 2(All) otherwise specify 0,1,2
+
+    ```
 1) To instal `node_modules`
     ```BASH
     npm install
