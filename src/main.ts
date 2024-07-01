@@ -80,8 +80,10 @@ wss.on('connection', function connection(ws: WebSocket) {
 				handleJoin(client, message);
 				break;
 			case 'MESG': // Received M2
-
 				handleMessage(client, message);
+				break;
+			case 'A-JN': // Received M3 Join
+				handleAcknowledgeJoin(client);
 				break;
 			default:
 				break;
@@ -93,6 +95,11 @@ wss.on('connection', function connection(ws: WebSocket) {
 	})
 });
 
+function handleAcknowledgeJoin(senderClient:Client) {
+	// TODO !!!
+	// Add check to see if the alias being acked is the correct one
+	senderClient.updateState(4);
+}
 
 function handleJoin(client: Client, message: any) {
 	if (!isMessage1(message)) {

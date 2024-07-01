@@ -167,7 +167,7 @@ export class Client {
     }
 
     private failureLog(messageCode:1|2|3|4|5|6|6.5) {
-        log(1,'CLIENT',`failed send R${messageCode.toString} of ${this.alias}(${this.getClientId}) due to state=(${this.currentState})`);
+        log(1,'CLIENT',`failed send R${messageCode.toString()} of ${this.alias}(${this.getClientId()}) due to state=(${this.currentState})`);
     }
 
     private sendSuccesLog(messageCode:1|2|3|4|5|6|6.5) {

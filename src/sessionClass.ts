@@ -85,8 +85,8 @@ export class Session {
         } else {
             // Send R6 to all clients
             // Send R3 to this client
-            // if (!newClient.sendR3(this.generateR3Payload())) return false;
-            // if (!this.sendR6ToAll(newClient.getAlias(),newClient.getPublicKey())) return false;
+            if (!this.sendR6JoinToAll(newClient.getAlias(),newClient.getPublicKey())) return false;
+            if (!newClient.sendR3(this.generateR3Payload())) return false;
         }
         this.clients.push(newClient);
         log(1,'SESSION',`added new client:${newClient.getAlias()}(${newClient.getClientId()}) to session: ${this.sessionId}`);
@@ -135,9 +135,12 @@ export class Session {
     private sendR6JoinToAll(alias:string,publicKey:string):boolean {
         for (let index = 0; index < this.clients.length; index++) {
             const client = this.clients[index];
-            client.sendR6join(alias,publicKey);
+            if (!client.sendR6join(alias,publicKey) ) {
+                log(1,'SESSION',`unable to send R6 to all clients in session: ${this.sessionId}`);
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
     getSessionId():number {
