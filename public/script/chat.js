@@ -2,6 +2,7 @@ const wsLink = 'ws://localhost:8080';
 let socket;
 
 let CURRENTSTATE = 0;
+// contains pairs of [alias,key];
 let SESSION_CLIENTS = []; // Excluding self
 
 connectWS();
@@ -76,8 +77,28 @@ function closeWS() {
 
 function sendWS() {
     const text = document.getElementById('input-text-area').value
-    socket.send(text);
-    console.log(`sent data: ${text}`);
+    if (CURRENTSTATE == 4) {
+        let message = {
+            command: 'MESG',
+            payload: generateEncryptedPayload(text)
+        }
+        socket.send(JSON.stringify(message));
+        console.log(`sent message ${message}`);
+        displayNotification(`message sent`);
+
+    }
+}
+
+function generateEncryptedPayload(text) {
+    let payload = [];
+    for (let index = 0; index < SESSION_CLIENTS.length; index++) {
+        const pair = SESSION_CLIENTS[index];
+        payload.push({
+            alias: pair[0],
+            message: text       // Modify later to be encrypted by the user's public key
+        })
+    }
+    return payload;
 }
 
 function exitPage() {
@@ -103,9 +124,10 @@ function handleStateChangeFrom4(message) {
     switch (message.command) {
         case 'MESG':  // R5
             // decrypt the messge and display with timestam and alias
-            document.getElementById('chat-display').innerHTML += `${message.alias}:${message.message} <br>`;
+            let now = new Date();
+            document.getElementById('chat-display').innerHTML += `${now.getHours()}:${now.getMinutes()}<br><u>${message.from}</u>:${message.message} <br>`;
             console.log('received a message');
-            displayNotification(`received a message from ${message.alias}`);
+            displayNotification(`received a message from ${message.from}`);
             // No change in state
             break;
         case 'JOIN': // R6J

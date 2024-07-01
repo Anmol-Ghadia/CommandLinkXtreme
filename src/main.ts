@@ -6,7 +6,7 @@ import { sendMail } from "./mailer";
 import bodyParser from 'body-parser';
 import { log } from './logger';
 import { Client } from "./states";
-import { AllSessions, isMessage1 } from "./sessionClass";
+import { AllSessions, isMessage1, isMessage2 } from "./sessionClass";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -74,12 +74,14 @@ wss.on('connection', function connection(ws: WebSocket) {
 
 	ws.on('message', function messageIn(rawData) {
 		const message = JSON.parse(rawData.toString());
-		log(1, 'MESSAGE', `received ${message}`);
+		log(1, 'MESSAGE', `received ${rawData.toString()}`);
 		switch (message.command) {
-			case 'JOIN':
+			case 'JOIN': // Received M1
 				handleJoin(client, message);
 				break;
-			case '':
+			case 'MESG': // Received M2
+
+				handleMessage(client, message);
 				break;
 			default:
 				break;
@@ -93,11 +95,26 @@ wss.on('connection', function connection(ws: WebSocket) {
 
 
 function handleJoin(client: Client, message: any) {
-	if (isMessage1(message)) {  // ERROR in this 
-		log(1, 'MESSAGE', `received command:${message.command} from Client:${client.getAlias()}(${client.getClientId()})`);
+	if (!isMessage1(message)) {
+		log(1,'SOCKET',`received JOIN command from ${client.getAlias()}(${client.getClientId()})`);
+		log(0, 'MESSAGE', `failed to parse M1 from ${client.getAlias()}(${client.getClientId()})`);
+		return;
+	}
+	log(1, 'MESSAGE', `received command:${message.command} from Client:${client.getAlias()}(${client.getClientId()})`);
 		if (!ALLSESSIONS.promoteClient(client, message))
 			log(0, 'ERROR', `in upgrading client:${client.getAlias()}(${client.getClientId()})`);
-	} else {
-		log(0, 'MESSAGE', `failed to parse`);
+}
+
+function handleMessage(client: Client, message: any) {
+	log(1,'SOCKET',`received MESG command from ${client.getAlias()}(${client.getClientId()})`);
+	let session = ALLSESSIONS.getClientsSession(client);
+	if (session == null) {
+		log(0,'HANDLE MESG',`could not find session of client:${client.getAlias()}(${client.getClientId()})`);
+		return;
 	}
+	if (!isMessage2(message)) {
+		log(0, 'MESSAGE', `failed to parse M2 from ${client.getAlias()}(${client.getClientId()})`);
+		return;
+	}
+	session.forwardMessage(client,message);
 }

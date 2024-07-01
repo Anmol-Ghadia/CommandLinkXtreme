@@ -50,6 +50,15 @@ export class AllSessions {
         return new Session(sessionId);
     }
 
+    getClientsSession(client:Client) : Session | null {
+        for (let index = 0; index < this.clientSessionPairs.length; index++) {
+            const pair = this.clientSessionPairs[index];
+            if (pair[0].getClientId() == client.getClientId()) {
+                return pair[1];
+            }
+        }
+        return null;
+    }
 }
 
 
@@ -77,11 +86,38 @@ export class Session {
             // Send R6 to all clients
             // Send R3 to this client
             // if (!newClient.sendR3(this.generateR3Payload())) return false;
-            // if (!this.sendR6ToAll(newClient.getPublicKey(),newClient.getAlias())) return false;
+            // if (!this.sendR6ToAll(newClient.getAlias(),newClient.getPublicKey())) return false;
         }
         this.clients.push(newClient);
         log(1,'SESSION',`added new client:${newClient.getAlias()}(${newClient.getClientId()}) to session: ${this.sessionId}`);
         return true;
+    }
+
+    // forwards the message from a client "senderCient" to appropriate clients
+    forwardMessage(senderCient:Client,message:message2) {
+        // check that message2 has correct payload for each client
+        if (message.payload.length != this.clients.length-1) {
+            log(1,'SESSION',`received malformed MESG (ERR:1) from ${senderCient.getAlias()}(${senderCient.getClientId()})`);
+            return;
+        }
+        for (let index = 0; index < this.clients.length; index++) {
+            const client = this.clients[index];
+            if (client.getClientId() == senderCient.getClientId()) {
+                continue; // do nothing for the sender client
+            }
+            let alias = client.getAlias();
+            let didClientGetR5 = false;
+            for (let index = 0; index < message.payload.length; index++) {
+                const subMessage = message.payload[index];
+                if (alias == subMessage.alias) {
+                    client.sendR5(senderCient.getAlias(),subMessage.message);
+                    didClientGetR5 = true
+                }
+            }
+            if (!didClientGetR5) {
+                log(1,'SESSION',`received malformed MESG (ERR:2) from ${senderCient.getAlias()}(${senderCient.getClientId()})`)
+            }
+        }
     }
 
     private generateR3Payload():singlePayloadR3[] {
@@ -95,8 +131,12 @@ export class Session {
         return payload;
     }
 
-    private sendR6ToAll(publicKey:string,alias:string):boolean {
-        // TODO !!!
+    // send R6 to all existing clients that new user joined
+    private sendR6JoinToAll(alias:string,publicKey:string):boolean {
+        for (let index = 0; index < this.clients.length; index++) {
+            const client = this.clients[index];
+            client.sendR6join(alias,publicKey);
+        }
         return false;
     }
 
@@ -123,5 +163,31 @@ export function isMessage1(obj: any): obj is message1 {
         typeof obj.sessionId === 'number' &&
         typeof obj.key === 'string' &&
         typeof obj.alias === 'string'
+    );
+}
+
+
+export type message2SinglePayload = {
+    alias: string,
+    message: string
+}
+
+export type message2 = {
+    command: string,
+    payload: message2SinglePayload[]
+}
+
+export function isMessage2(obj: any): obj is message2 {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        typeof obj.command === 'string' &&
+        Array.isArray(obj.payload) &&
+        obj.payload.every((item: any) =>
+            typeof item === 'object' &&
+            item !== null &&
+            typeof item.alias === 'string' &&
+            typeof item.message === 'string'
+        )
     );
 }
