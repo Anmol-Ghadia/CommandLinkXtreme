@@ -124,6 +124,8 @@ export class Session {
             log(1,'SESSION',`received malformed MESG (ERR:1) from ${senderCient.getAlias()}(${senderCient.getClientId()})`);
             return;
         }
+        // TODO !!!
+        // Check that all clients except 'senderClient' were sent a message otherwise raise error
         for (let index = 0; index < this.clients.length; index++) {
             const client = this.clients[index];
             if (client.getClientId() == senderCient.getClientId()) {
