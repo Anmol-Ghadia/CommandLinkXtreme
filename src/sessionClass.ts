@@ -89,10 +89,14 @@ export class Session {
 
     protected sessionId:number;
     protected clients: Client[];
+    protected clientsInS5: Client[];
+    protected aliasBeingAck: string;
 
     constructor(sessionId:number) {
         this.sessionId = sessionId;
         this.clients = [];
+        this.clientsInS5 = [];
+        this.aliasBeingAck = '';
     }
 
     // returns true if the addition succeded
@@ -148,6 +152,7 @@ export class Session {
 
     removeClient(clientToRemove: Client) {
         let out:Client[] = [];
+        this.aliasBeingAck = clientToRemove.getAlias();
         for (let index = 0; index < this.clients.length; index++) {
             const currentClient = this.clients[index];
             if (currentClient.getClientId() == clientToRemove.getClientId()) {
@@ -178,14 +183,39 @@ export class Session {
 
     // send R6 to all existing clients that new user joined
     private sendR6JoinToAll(alias:string,publicKey:string):boolean {
+        this.aliasBeingAck = alias;
         for (let index = 0; index < this.clients.length; index++) {
             const client = this.clients[index];
             if (!client.sendR6join(alias,publicKey) ) {
                 log(1,'SESSION',`unable to send R6 to all clients in session: ${this.sessionId}`);
                 return false;
             }
+            this.clientsInS5.push(client);
         }
         return true;
+    }
+
+    // removes a client from S5
+    removeClientFromS5(client:Client) {
+        let out:Client[] = [];
+        for (let index = 0; index < this.clientsInS5.length; index++) {
+            const currentClient = this.clientsInS5[index];
+            if (currentClient.getClientId() == client.getClientId()) {
+                // found the client to remove
+                // do nothing
+                continue;
+            }
+            out.push(currentClient);
+        }
+        this.clientsInS5 = out;
+        client.updateState(4);
+    }
+
+    checkClientAck(alias:string):boolean {
+        if (this.aliasBeingAck == alias) {
+            return true;
+        }
+        return false;
     }
 
     getSessionId():number {
@@ -194,12 +224,37 @@ export class Session {
 }
 
 
+// =================================================================================================
+// types of messages
 export type message1 = {
     command: string,
     sessionId: number,
     key: string,
     alias: string
 }
+
+export type message2SinglePayload = {
+    alias: string,
+    message: string
+}
+
+export type message2 = {
+    command: string,
+    payload: message2SinglePayload[]
+}
+
+export type message3 = {
+    command: string,
+    alias: string,
+}
+
+export type message4 = {
+    command: string;
+}
+
+// =================================================================================================
+
+// type guards
 
 export function isMessage1(obj: any): obj is message1 {
     
@@ -211,17 +266,6 @@ export function isMessage1(obj: any): obj is message1 {
         typeof obj.key === 'string' &&
         typeof obj.alias === 'string'
     );
-}
-
-
-export type message2SinglePayload = {
-    alias: string,
-    message: string
-}
-
-export type message2 = {
-    command: string,
-    payload: message2SinglePayload[]
 }
 
 export function isMessage2(obj: any): obj is message2 {
@@ -236,5 +280,22 @@ export function isMessage2(obj: any): obj is message2 {
             typeof item.alias === 'string' &&
             typeof item.message === 'string'
         )
+    );
+}
+
+export function isMessage3(obj: any): obj is message3 {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        typeof obj.command === 'string' &&
+        typeof obj.alias === 'string'
+    );
+}
+
+export function isMessage4(obj: any): obj is message4 {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        typeof obj.command === 'string'
     );
 }

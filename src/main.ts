@@ -6,7 +6,7 @@ import { sendMail } from "./mailer";
 import bodyParser from 'body-parser';
 import { log } from './logger';
 import { Client } from "./states";
-import { AllSessions, isMessage1, isMessage2 } from "./sessionClass";
+import { AllSessions, isMessage1, isMessage2, isMessage3, isMessage4 } from "./sessionClass";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -85,7 +85,7 @@ wss.on('connection', function connection(ws: WebSocket) {
 				handleMessage(client, message);
 				break;
 			case 'A-JN': // Received M3 Join ack
-				handleAcknowledgeJoin(client);
+				handleAcknowledgeJoin(client, message);
 				break;
 			case 'A-LV': // Received M3 Leave ack
 				handleAcknowledgeLeave(client,message);
@@ -112,32 +112,67 @@ function handleExit(exitingClient:Client) {
 }
 
 function handleAllAlone(client:Client,message:any) {
-	// TODO !!!
-	// Add check to see if the alias being acked is the correct one
 	if (ALLSESSIONS.getClientsSession(client)?.getClientCount() != 1) {
 		log(1,'SESSION',`unexpected A-AL command from client:${client.getClientId()}`);
-		// TODO !!!
 		return;
 	}
-	// message should be of type M4
-	log(1,'SESSION',`Assuming that client:${client.getClientId()} sent A-AL`);
-	client.updateState(3);
-	return;
+
+  if (isMessage4(message)) {
+    log(1,'SESSION',`Assuming that client:${client.getClientId()} sent A-AL`);
+    client.updateState(3);
+    return;
+  }
+
+  log(1, 'SESSION', `received malformed A-AL (M4) from ${client.getAlias()}(${client.getClientId()})`);
 }
 function handleAcknowledgeLeave(client:Client, message: any) {
-	// TODO !!!
-	// check if message is of correct type
+	const session = ALLSESSIONS.getClientsSession(client);
+  if (session === null) {
+    log(1, 'SESSION', `session not found for client ${client.getClientId()}  (234)`);
+    return; 
+  }
 	
-	// message should be of type M3
-	// TODO !!!
-	log(1,'SESSION',`Assuming that client:${client.getClientId()} sent A-LV`);
-	client.updateState(4);
-	return;
+	if (!isMessage3(message)) {
+    log(1,'SOCKET',`received M3 from ${client.getAlias()}(${client.getClientId()})`);
+		log(0, 'MESSAGE', `not of type M3 ${client.getAlias()}(${client.getClientId()})`);
+    return;
+  }
+  
+	
+  if (message.command == 'A-LV') {
+    if (!session.checkClientAck(message.alias)) {
+       log(1,'SESSION',`received unexpected alias ${client.getAlias()}(${client.getClientId()})`);
+      return;
+    }
+    log(1,'SESSION',`Assuming that client:${client.getClientId()} sent A-LV`);
+    session.removeClientFromS5(client);
+    return;
+  } 
+  log(1, 'CLIENT' , `received unexpected A-LV from ${client.getAlias()}(${client.getClientId()})`)
 }
-function handleAcknowledgeJoin(senderClient:Client) {
-	// TODO !!!
-	// Add check to see if the alias being acked is the correct one
-	senderClient.updateState(4);
+
+function handleAcknowledgeJoin(senderClient:Client, message:any) {
+  const session = ALLSESSIONS.getClientsSession(senderClient);
+  if (session === null) {
+    log(1, 'SESSION', `session not found for client ${senderClient.getClientId()}  (678)`);
+    return; 
+  }
+
+  if (message.command !== 'A-JN') {
+    log(1, 'CLIENT' , `expected A-JN but recieved other: from ${senderClient.getAlias()}(${senderClient.getClientId()})`);
+    return;
+  } 
+
+  if (!session.checkClientAck(message.alias)) {
+    log(1,'SESSION',`received unexpected alias ${senderClient.getAlias()}(${senderClient.getClientId()})`);
+    return;
+ }
+  if (senderClient.getCurrentState() == 5) {
+    session.removeClientFromS5(senderClient);
+    log(1,'SOCKET',`received A-JN from ${senderClient.getAlias()}(${senderClient.getClientId()})`);
+ }
+ log(1, 'SESSION', `client not in state 5 ${senderClient.getAlias()}(${senderClient.getClientId()})`);
+
 }
 
 function handleJoin(client: Client, message: any) {
