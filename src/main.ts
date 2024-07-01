@@ -34,8 +34,10 @@ app.get("/chat", (req: Request, res: Response) => {
 	res.render('chat', {});
 });
 
+// Body Parser for nodemailer 
 app.use(bodyParser.json());
 
+// Route for sending email
 app.post('/send-email', (req: Request, res: Response) => {
 	const { to } = req.body;
 	const text = "You have been invited for a new conversatoin! Click the link below to join.";

@@ -3,8 +3,8 @@ require('dotenv').config();
 
 const EMAIL_SENDER = process.env.EMAIL_SENDER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
-const TEST_RECEIVER = process.env.TEST_RECEIVER;
 
+// create reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
     service: 'outlook', 
     auth: {
@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-
+// send mail with defined transport object
 export const sendMail = (to: string, text: string): void => {
     const mailOptions = {
         from: EMAIL_SENDER,

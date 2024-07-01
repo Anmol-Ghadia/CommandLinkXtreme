@@ -6,11 +6,13 @@ document.getElementById('emailN').addEventListener('change', function() {
   document.getElementById('email-input').disabled = this.checked;
 });
 
+// Redirects to chat page
 async function goToChat() {
   console.log('Chat page transfer loaded');
   window.location.href = '/chat';
 }
 
+// Checks `emailY`, retrieves email if checked and not empty, calls `send()`. If not checked, calls `goToChat()`.
 async function buttonClick() {
   const yesOption = document.getElementById("emailY");
   if (yesOption.checked) {
@@ -30,6 +32,7 @@ async function buttonClick() {
   }
 }
 
+// Sends email to server
 async function send(toEmail) {
   try {
       const response = await fetch('/send-email', {
