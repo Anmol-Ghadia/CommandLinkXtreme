@@ -59,6 +59,28 @@ export class AllSessions {
         }
         return null;
     }
+
+    removeClient(client: Client) {
+        let out: Client[] = [];
+        let foundClient = false;
+        for (let index = 0; index < this.unInitializedClients.length; index++) {
+            const currentClient = this.unInitializedClients[index];
+            if (client.getClientId() == currentClient.getClientId()) {
+                foundClient = true;
+                continue;
+            }
+            out.push(currentClient);
+        }
+        this.unInitializedClients = out;
+        if (foundClient) return;
+        // Client is part of a session
+        let session = this.getClientsSession(client);
+        if (session == null) {
+            log(1,'ALL-SESSION',`client: ${client.getAlias()}(${client.getClientId()}) not found in any list`);
+            return;
+        }
+        session.removeClient(client);
+    }
 }
 
 
@@ -96,6 +118,8 @@ export class Session {
     // forwards the message from a client "senderCient" to appropriate clients
     forwardMessage(senderCient:Client,message:message2) {
         // check that message2 has correct payload for each client
+        log(1,'TEMPORARY',`message.payload.length = ${message.payload.length}`)
+        log(1,'TEMPORARY',`this.clients.length = ${this.clients.length}`)
         if (message.payload.length != this.clients.length-1) {
             log(1,'SESSION',`received malformed MESG (ERR:1) from ${senderCient.getAlias()}(${senderCient.getClientId()})`);
             return;
@@ -118,6 +142,25 @@ export class Session {
                 log(1,'SESSION',`received malformed MESG (ERR:2) from ${senderCient.getAlias()}(${senderCient.getClientId()})`)
             }
         }
+    }
+
+    removeClient(clientToRemove: Client) {
+        let out:Client[] = [];
+        for (let index = 0; index < this.clients.length; index++) {
+            const currentClient = this.clients[index];
+            if (currentClient.getClientId() == clientToRemove.getClientId()) {
+                // found the client to remove
+                // do nothing
+                continue;
+            }
+            currentClient.sendR6leave(clientToRemove.getAlias());
+            out.push(currentClient);
+        }
+        this.clients = out;
+    }
+
+    getClientCount() : number {
+        return this.clients.length;
     }
 
     private generateR3Payload():singlePayloadR3[] {
@@ -146,7 +189,6 @@ export class Session {
     getSessionId():number {
         return this.sessionId;
     }
- 
 }
 
 

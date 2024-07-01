@@ -82,10 +82,20 @@ wss.on('connection', function connection(ws: WebSocket) {
 			case 'MESG': // Received M2
 				handleMessage(client, message);
 				break;
-			case 'A-JN': // Received M3 Join
+			case 'A-JN': // Received M3 Join ack
 				handleAcknowledgeJoin(client);
 				break;
+			case 'A-LV': // Received M3 Leave ack
+				handleAcknowledgeLeave(client,message);
+				break;
+			case 'A-AL': // Received M4 ack leave and all alone
+				handleAllAlone(client,message);
+				break;
+			case 'EXIT': // Received EXIT
+				handleExit(client);
+				break;
 			default:
+				log(1,'CLIENT',`${client.getClientId()} did not find a valid command`);
 				break;
 		}
 
@@ -95,6 +105,33 @@ wss.on('connection', function connection(ws: WebSocket) {
 	})
 });
 
+function handleExit(exitingClient:Client) {
+	ALLSESSIONS.removeClient(exitingClient);
+}
+
+function handleAllAlone(client:Client,message:any) {
+	// TODO !!!
+	// Add check to see if the alias being acked is the correct one
+	if (ALLSESSIONS.getClientsSession(client)?.getClientCount() != 1) {
+		log(1,'SESSION',`unexpected A-AL command from client:${client.getClientId()}`);
+		// TODO !!!
+		return;
+	}
+	// message should be of type M4
+	log(1,'SESSION',`Assuming that client:${client.getClientId()} sent A-AL`);
+	client.updateState(3);
+	return;
+}
+function handleAcknowledgeLeave(client:Client, message: any) {
+	// TODO !!!
+	// check if message is of correct type
+	
+	// message should be of type M3
+	// TODO !!!
+	log(1,'SESSION',`Assuming that client:${client.getClientId()} sent A-LV`);
+	client.updateState(4);
+	return;
+}
 function handleAcknowledgeJoin(senderClient:Client) {
 	// TODO !!!
 	// Add check to see if the alias being acked is the correct one

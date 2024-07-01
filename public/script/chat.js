@@ -58,7 +58,9 @@ function connectWS() {
     });
 
     socket.addEventListener('close', function (event) {
-        console.log('WebSocket connection closed.');
+        console.log('received close event from server');
+        console.log(event);
+        handleExit();
     });
 
     socket.addEventListener('error', function (event) {
@@ -71,15 +73,23 @@ function displayNotification(msg) {
     document.getElementById('display-notification').innerHTML = msg;
 }
 
-function closeWS() {
-    socket.close();
-    console.log("socket Closed");
-}
 
 function exitPage() {
-    closeWS();
+    handleExit();
     window.location.href = "/";
 }
+
+function handleExit() {
+    let message = {
+        command: 'EXIT'
+    }
+    socket.send(JSON.stringify(message));
+
+    console.log("socket Closed");
+    socket.close();
+}
+
+
 
 function sendM1(socket) {
     let random = Math.floor(Math.random()*100);
@@ -132,6 +142,26 @@ function sendM3Join(alias) {
     addMessage('SERVER',`${alias} has joined the chat`);
 }
 
+function sendM3Leave(alias) {
+    let message = {
+        command: 'A-LV',
+        alias: alias
+    }
+
+    socket.send(JSON.stringify(message));
+    addMessage('SERVER',`${alias} has left the chat`);
+}
+
+function sendM4(alias) {
+    let message = {
+        command: 'A-AL',
+        alias: alias
+    }
+
+    socket.send(JSON.stringify(message));
+    addMessage('SERVER',`${alias} has left the chat`);
+}
+
 function handleStateChangeFrom4(message) { 
     // Check the message TODO !!!
     switch (message.command) {
@@ -155,6 +185,21 @@ function handleStateChangeFrom4(message) {
             // TODO !!!
             console.log('MESAGE LEAV received');
             displayNotification(`received leave message`);
+            SESSION_CLIENTS = SESSION_CLIENTS.filter((pair)=>{
+                return pair[0] !== message.alias;
+            })
+            if (SESSION_CLIENTS.length == 0) {
+                // Last client leaving
+                // Send M4
+                sendM4(message.alias);
+                CURRENTSTATE = 3;
+                addMessage('SERVER',`number of remaining users: ${SESSION_CLIENTS.length}`);
+                return;
+            }
+            // more clients remaining after a given client leaves
+            // Send M3
+            sendM3Leave(message.alias);
+            addMessage('SERVER',`number of remaining users: ${SESSION_CLIENTS.length+1}`);
             break;
     
         default:
@@ -170,6 +215,7 @@ function handleStateChangeFrom3(message) {
     // Check the message TODO !!!
     SESSION_CLIENTS.push([message.alias,message.key]);
     displayNotification(`user joined with alias: ${message.alias}`);
+    addMessage('SERVER',` ${message.alias} joined thr chat`);
     CURRENTSTATE = 4;
 }
 
