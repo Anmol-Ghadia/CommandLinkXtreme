@@ -305,28 +305,6 @@ Many states were explicitly stated in `Scenario 1`, but in practice they would b
 1) Multiple users
 1) File transfer
 
-
-## Todo
-1) create join page in pug
-1) create join page in express
-1) add banner on chat page if invalid session
-1) add javascript to chat page which does the following things:
-    1) checks if user has valid session id (front end only)
-    1) ~~sets up an websocket with the server~~
-    1) waits for a user to connect
-    1) once connected, exchange keys for encryption
-    1) now the user can chat
-    1) all chats should be encrypted before sending
-1) find a free sql server
-1) ~~create chat page in pug~~
-1) ~~create chat page in express~~
-1) ~~create index page in pug~~
-1) ~~create index page in express~~
-1) ~~create create page in pug~~
-1) ~~create create page in express~~
-1) ~~nodemailer implementation~~
-1) implement link generatoin for the chat for nodemailer
-
 ### Developer Instructions
 
 1) Make `.env` file in the root of project directory.

@@ -235,7 +235,7 @@ export type message1 = {
 
 export type message2SinglePayload = {
     alias: string,
-    message: string
+    message: any
 }
 
 export type message2 = {
@@ -278,7 +278,7 @@ export function isMessage2(obj: any): obj is message2 {
             typeof item === 'object' &&
             item !== null &&
             typeof item.alias === 'string' &&
-            typeof item.message === 'string'
+            typeof item.message !== 'undefined'
         )
     );
 }

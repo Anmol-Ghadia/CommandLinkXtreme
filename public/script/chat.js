@@ -1,3 +1,4 @@
+
 const wsLink = 'ws://localhost:8080';
 let socket;
 
@@ -5,6 +6,8 @@ let CURRENTSTATE = 0;
 // contains pairs of [alias,key];
 let SESSION_CLIENTS = []; // Excluding self
 let ALIAS = '';
+let PUBLICKEY = '';
+let PRIVATEKEY = '';
 
 connectWS();
 function connectWS() {
@@ -13,14 +16,14 @@ function connectWS() {
     CURRENTSTATE = 1;
 
     // WebSocket event listeners
-    socket.addEventListener('open', function (event) {
+    socket.addEventListener('open', async function (event) {
         console.log('WebSocket connection established.');
         
-        sendM1(socket);
+        await sendM1(socket);
         CURRENTSTATE = 2;
     });
 
-    socket.addEventListener('message', function (event) {
+    socket.addEventListener('message',async function (event) {
         let message = JSON.parse(event.data);
         console.log('Message from server:', message);
         let command = message.command;
@@ -31,7 +34,7 @@ function connectWS() {
                     displayNotification('Server mesbehaving (102)');
                     return;
                 }
-                handleStateChangeFrom2(message);
+                await handleStateChangeFrom2(message);
                 break;
             case 3:
                 if (command != 'JOIN') {
@@ -39,7 +42,7 @@ function connectWS() {
                     displayNotification('Server mesbehaving (103)');
                     return;
                 }
-                handleStateChangeFrom3(message);
+                await handleStateChangeFrom3(message);
                 break;
             case 4:
                 if (command != 'MESG' && command != 'LEAV' && command != 'JOIN') {
@@ -47,7 +50,7 @@ function connectWS() {
                     displayNotification('Server mesbehaving (104)');
                     return;
                 }
-                handleStateChangeFrom4(message);
+                await handleStateChangeFrom4(message);
                 break;
             default:
             
@@ -91,25 +94,36 @@ function handleExit() {
 
 
 
-function sendM1(socket) {
+async function sendM1(socket) {
+    const keyPair = await generateKeyPair();
+
+    PUBLICKEY = JSON.stringify(await exportPublicKey(keyPair.publicKey));
+    PRIVATEKEY = keyPair.privateKey;
+
     let random = Math.floor(Math.random()*100);
     ALIAS = `alice${random}`;
     let message = {
         command: 'JOIN',
         sessionId: 990011,
-        key: `abc${random}`,
+        key: PUBLICKEY,
         alias: ALIAS
     }
 
     socket.send(JSON.stringify(message));
 }
 
-function sendM2() {
+async function sendM2() {
     if (CURRENTSTATE == 4) {
         const text = document.getElementById('input-text-area').value
+        // Instead split message and send it in chunks
+        // TODO !!!
+        if (text.length >= 6*26) {
+            displayNotification('text too long');
+            return;
+        }
         let message = {
             command: 'MESG',
-            payload: generateEncryptedPayload(text)
+            payload: await generateEncryptedPayload(text)
         }
         socket.send(JSON.stringify(message));
         console.log(`sent message ${message}`);
@@ -120,13 +134,13 @@ function sendM2() {
     }
 }
 
-function generateEncryptedPayload(text) {
+async function generateEncryptedPayload(text) {
     let payload = [];
     for (let index = 0; index < SESSION_CLIENTS.length; index++) {
         const pair = SESSION_CLIENTS[index];
         payload.push({
             alias: pair[0],
-            message: text       // Modify later to be encrypted by the user's public key
+            message: await encryptMessage(text,pair[1])
         })
     }
     return payload;
@@ -162,12 +176,13 @@ function sendM4(alias) {
     addMessage('SERVER',`${alias} has left the chat`);
 }
 
-function handleStateChangeFrom4(message) { 
+async function handleStateChangeFrom4(message) { 
     // Check the message TODO !!!
     switch (message.command) {
         case 'MESG':  // R5
             // decrypt the messge and display with timestam and alias
-            addMessage(message.from,message.message);
+            const plainTextMessageReceived = await decryptMessage(message.message,PRIVATEKEY);
+            addMessage(message.from,plainTextMessageReceived);
             console.log('received a message');
             displayNotification(`received a message from ${message.from}`);
             // No change in state
@@ -211,15 +226,16 @@ function handleStateChangeFrom4(message) {
     
 }
 
-function handleStateChangeFrom3(message) { 
+async function handleStateChangeFrom3(message) { 
     // Check the message TODO !!!
-    SESSION_CLIENTS.push([message.alias,message.key]);
+    const importedPublicKey = await importPublicKey(JSON.parse(message.key));
+    SESSION_CLIENTS.push([message.alias,importedPublicKey]);
     displayNotification(`user joined with alias: ${message.alias}`);
     addMessage('SERVER',` ${message.alias} joined thr chat`);
     CURRENTSTATE = 4;
 }
 
-function handleStateChangeFrom2(message) {
+async function handleStateChangeFrom2(message) {
     switch (message.command) {
         case 'F-JN': // Check the message TODO !!!
             // ERROR in M1, try to connect again
@@ -242,7 +258,8 @@ function handleStateChangeFrom2(message) {
             let userAliases = '';
             for (let index = 0; index < message['payload'].length; index++) {
                 const pair = message['payload'][index];
-                SESSION_CLIENTS.push([pair.alias,pair.key]);
+                const usersPublicKey = await importPublicKey(JSON.parse(pair.key));
+                SESSION_CLIENTS.push([pair.alias,usersPublicKey]);
                 userAliases += pair.alias + ', ';
             }
             addMessage('SERVER',`existing users are: ${userAliases}`);
@@ -260,3 +277,98 @@ function addMessage(from,msg) {
     let now = new Date();
     document.getElementById('chat-display').innerHTML += `${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg} <br>`;
 }
+
+
+
+
+async function generateKeyPair() {
+    return { publicKey, privateKey } = await window.crypto.subtle.generateKey(
+        {
+          name: "RSA-OAEP",
+          modulusLength: 2048, // can be 1024, 2048, or 4096
+          publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+          hash: { name: "SHA-256" }, // can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+        },
+        true, // whether the key is extractable (i.e. can be used in exportKey)
+        ["encrypt", "decrypt"] // can be any combination of "encrypt" and "decrypt"
+    );
+} 
+
+
+async function encryptMessage(message,publicKey) {
+    const encodedMessage = new TextEncoder().encode(message);
+    const encrypted = await window.crypto.subtle.encrypt(
+        {
+            name: "RSA-OAEP"
+        },
+        publicKey,
+        encodedMessage
+    );
+    const base64String = arrayBufferToBase64(encrypted);
+    return base64String;
+}
+
+async function decryptMessage(encryptedMessageAsBase64,privateKey) {
+    const arrayBuffer = base64ToArrayBuffer(encryptedMessageAsBase64);
+    const decrypted = await window.crypto.subtle.decrypt(
+        {
+            name: "RSA-OAEP"
+        },
+        privateKey,
+        arrayBuffer
+    );
+    
+    return new TextDecoder().decode(decrypted);
+}
+
+function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
+function base64ToArrayBuffer(base64) {
+    const binaryString = window.atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
+async function exportPublicKeyToPEM(publicKey) {
+    const exported = await window.crypto.subtle.exportKey(
+        "spki",
+        publicKey
+    );
+
+    const exportedAsBase64 = window.btoa(String.fromCharCode.apply(null, new Uint8Array(exported)));
+    const pemExported = `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64.match(/.{1,64}/g).join('\n')}\n-----END PUBLIC KEY-----`;
+
+    return pemExported;
+}
+
+async function exportPublicKey(key) {
+    const exported = await window.crypto.subtle.exportKey("jwk", key);
+    return JSON.stringify(exported);
+}
+
+async function importPublicKey(jwk) {
+    const key = await window.crypto.subtle.importKey(
+        "jwk",
+        JSON.parse(jwk),
+        {
+            name: "RSA-OAEP",
+            hash: "SHA-256"
+        },
+        true,
+        ["encrypt"]
+    );
+    return key;
+}
+
