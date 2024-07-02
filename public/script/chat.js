@@ -113,25 +113,33 @@ async function sendM1(socket) {
 }
 
 async function sendM2() {
-    if (CURRENTSTATE == 4) {
-        const text = document.getElementById('input-text-area').value
-        // Instead split message and send it in chunks
-        // TODO !!!
-        if (text.length >= 6*26) {
-            displayNotification('text too long');
-            return;
-        }
-        let message = {
-            command: 'MESG',
-            payload: await generateEncryptedPayload(text)
-        }
-        socket.send(JSON.stringify(message));
-        console.log(`sent message ${message}`);
-        displayNotification(`message sent`);
-        addMessage('you',text);
-    } else {
+    const maxTextLengthForOnePacket = 125;
+    if (CURRENTSTATE != 4) {
         displayNotification('Not in state 4, hence cannot send message');
+        return;
     }
+    const text = document.getElementById('input-text-area').value
+    
+    let textLength = text.length;
+    let totalLoopCount = Math.floor(textLength / maxTextLengthForOnePacket);
+    for (let index = 0; index < totalLoopCount; index++) {
+        await sendM2Helper(text.substring(index*125, (index+1)*125));
+    }
+    let reaminingChars = textLength % maxTextLengthForOnePacket;
+    if (reaminingChars != 0) {
+        await sendM2Helper(text.substring(totalLoopCount*125,totalLoopCount*125+reaminingChars));
+    }
+}
+
+async function sendM2Helper(text) {
+    let message = {
+        command: 'MESG',
+        payload: await generateEncryptedPayload(text)
+    }
+    socket.send(JSON.stringify(message));
+    console.log(`sent message ${message}`);
+    displayNotification(`message sent`);
+    addMessage('you',text);
 }
 
 async function generateEncryptedPayload(text) {
