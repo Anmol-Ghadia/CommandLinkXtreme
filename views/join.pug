@@ -10,10 +10,13 @@ html
         main 
             h2 Join an existing session
             label(for="session") Session ID
-            input(type="text" name="session" id="input-session-id" required)
+            input(type="text" name="session" id="session-id-input" required)
+            br
             label(for="alias") Alias
-            input(type="text" name="alias" id="input-alias" required)
+            input(type="text" name="alias" id="alias-input" placeholder='optional')
+            br
             // on click to change to joinSession method in join.js
-            button#joinSession(onclick= "window.location.href = '/chat'") Join 
-            h2 Go back to landing page
-            button#startConversation(onclick="window.location.href='/'") Back to landing page 
+            button#joinSession(onclick= "doJoin()") Join 
+        br
+        button#startConversation(onclick="window.location.href='/'") Back to landing page 
+        div#notification-area

@@ -42,6 +42,23 @@ app.get("/create/session", (req: Request, res: Response) => {
 	});
 });
 
+// Returns status code 200 if given session id is valid
+app.get('/session/check/:sessionId',(req:Request,res:Response) => {
+	let sessionId = parseInt(req.params['sessionId']);
+	
+	if (isNaN(sessionId) ||
+		sessionId == null ||
+		!ALLSESSIONS.sessionIdExits(sessionId)) {
+		res.status(400);
+		res.send();
+		return;
+	}
+
+	res.status(200);
+	res.send();
+	return;
+})
+
 // Body Parser for nodemailer 
 app.use(bodyParser.json());
 

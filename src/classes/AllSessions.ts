@@ -101,7 +101,7 @@ export class AllSessions {
     }
 
 
-    private sessionIdExits(checkId:number):boolean {
+    sessionIdExits(checkId:number):boolean {
         for (let index = 0; index < this.clientSessionPairs.length; index++) {
             const pair = this.clientSessionPairs[index];
             if (pair[1].getSessionId() == checkId) {
