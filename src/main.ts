@@ -1,12 +1,12 @@
 import express, { Express, Request, Response } from "express";
 import WebSocket from "ws";
 import { WebSocketServer } from 'ws';
-// import { AllSessions, SessionClass } from "./session";
 import { sendMail } from "./mailer";
 import bodyParser from 'body-parser';
 import { log } from './logger';
-import { Client } from "./states";
-import { AllSessions, isMessage1, isMessage2, isMessage3, isMessage4 } from "./sessionClass";
+import { Client } from "./classes/Client";
+import { AllSessions } from "./classes/AllSessions";
+import { isMessage1, isMessage2, isMessage3, isMessage4 } from "./classes/Protocol";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;

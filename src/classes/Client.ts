@@ -1,5 +1,6 @@
 import WebSocket from "ws";
-import {log} from './logger';
+import {log} from '../logger';
+import { singlePayloadR3 } from "./Protocol";
 
 // represents a clients state
 export class Client {
@@ -173,10 +174,4 @@ export class Client {
     private sendSuccesLog(messageCode:1|2|3|4|5|6|6.5) {
         log(2,'CLIENT',`sent R${messageCode} to ${this.alias}(${this.clientId})`)
     }
-}
-
-
-export type singlePayloadR3 = {
-    alias: string,
-    key: string
 }
