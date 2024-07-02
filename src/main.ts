@@ -36,7 +36,7 @@ app.get("/chat", (req: Request, res: Response) => {
 
 
 // Returns a 9 digit session id, returns 0 if error
-app.get("/create/session", (req: Request, res: Response) => {
+app.get("/session/create", (req: Request, res: Response) => {
 	res.json({
 		sessionId: ALLSESSIONS.getUniqueSessionId()
 	});
@@ -101,7 +101,7 @@ wss.on('connection', function connection(ws: WebSocket) {
 
 	ws.on('message', function messageIn(rawData) {
 		const message = JSON.parse(rawData.toString());
-		log(1, 'MESSAGE', `received ${rawData.toString()}`);
+		log(1, 'MESSAGE', `received command ${message.command} from ${client.getClientId()}`);
 		switch (message.command) {
 			case 'JOIN': // Received M1
 				handleJoin(client, message);
@@ -131,6 +131,10 @@ wss.on('connection', function connection(ws: WebSocket) {
 	ws.on('close', function close() {
 	})
 });
+
+setInterval(()=>{
+	ALLSESSIONS.logSession();
+},5000);
 
 function handleExit(exitingClient:Client) {
 	ALLSESSIONS.removeClient(exitingClient);

@@ -60,7 +60,7 @@ function generateAlias() {
 // Gets a unique session id from the server
 async function getId() {
     let id = 0;
-    await fetch('/create/session')
+    await fetch('/session/create')
         .then(res => res.json())
         .then(body => {
             id = body['sessionId'];

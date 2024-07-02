@@ -52,6 +52,8 @@ export class AllSessions {
         return new Session(sessionId);
     }
 
+    // Returns the session in which the given client is present
+    //  if client is not in a session, returns null
     getClientsSession(client:Client) : Session | null {
         for (let index = 0; index < this.clientSessionPairs.length; index++) {
             const pair = this.clientSessionPairs[index];
@@ -62,6 +64,7 @@ export class AllSessions {
         return null;
     }
 
+    // Removes the client from a session or uninitialized list
     removeClient(client: Client) {
         let out: Client[] = [];
         let foundClient = false;
@@ -100,7 +103,7 @@ export class AllSessions {
         return 0;
     }
 
-
+    // Returns true if a session with the given id exists
     sessionIdExits(checkId:number):boolean {
         for (let index = 0; index < this.clientSessionPairs.length; index++) {
             const pair = this.clientSessionPairs[index];
@@ -109,5 +112,23 @@ export class AllSessions {
             }
         }
         return false;
+    }
+
+    // Logs the contents of all sessions
+    logSession() {
+        log(2,'DUMP','='.repeat(15));
+        // uninitialized clients
+        log(2,'DUMP',`number of un-initialized clients: ${this.unInitializedClients.length}`);
+        for (let index = 0; index < this.unInitializedClients.length; index++) {
+            const client = this.unInitializedClients[index];
+            log(2,'DUMP',`un-initialized client #${index}: ${client.getAlias()}(ID:${client.getClientId()})`);
+        }
+
+        for (let index = 0; index < this.clientSessionPairs.length; index++) {
+            const pair = this.clientSessionPairs[index];
+            log(2,'DUMP',`session: ${pair[1].getSessionId()}, has Client: ${pair[0].getAlias()}(ID:${pair[0].getClientId()}) in state ${pair[0].getCurrentState()}`);
+        }
+
+        log(2,'DUMP','='.repeat(15));
     }
 }
