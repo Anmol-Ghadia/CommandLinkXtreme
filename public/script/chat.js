@@ -8,6 +8,9 @@ let SESSION_CLIENTS = []; // Excluding self
 let ALIAS = '';
 let PUBLICKEY = '';
 let PRIVATEKEY = '';
+let LASTMESSAGETIME = 0;
+let LASTMESSAGEBY = ''; // store alias here
+let CONTINUENEXTMESSAGE = false;
 
 connectWS();
 function connectWS() {
@@ -123,7 +126,7 @@ async function sendM2() {
     let textLength = text.length;
     let totalLoopCount = Math.floor(textLength / maxTextLengthForOnePacket);
     for (let index = 0; index < totalLoopCount; index++) {
-        await sendM2Helper(text.substring(index*125, (index+1)*125));
+        await sendM2Helper(text.substring(index*125, (index+1)*125) + 'a'); // a acts as a placeholder that increases the char count more than 125, indicating the receiver that the next message will be a continuation of this one
     }
     let reaminingChars = textLength % maxTextLengthForOnePacket;
     if (reaminingChars != 0) {
@@ -282,8 +285,37 @@ async function handleStateChangeFrom2(message) {
 }
 
 function addMessage(from,msg) {
+    // Check params to combine text
+    let cond1 = CONTINUENEXTMESSAGE
+    let cond2 = Date.now() - LASTMESSAGETIME <= 5*1000;
+    let cond3 = LASTMESSAGEBY == from;
+
+    // Update params for next addMessage call
+    LASTMESSAGEBY = from;
+    LASTMESSAGETIME = Date.now();
+    CONTINUENEXTMESSAGE = msg.length > 125;
+
+    // Remove the Continuation placeholder char from message
+    if (CONTINUENEXTMESSAGE) {
+        msg = msg.substring(0,125);
+    }
+
+    // Check if params meet criteria to continue previous text
+    if (cond1 && cond2 && cond3) {
+        // Combine with previous message
+        document.getElementById('chat-display').innerHTML += msg;
+        return;
+    }
+
+    // check if params meet the criteria to omit time and alias
+    if (cond2 && cond3) {
+        document.getElementById('chat-display').innerHTML += `<br><u>${from}</u>:${msg}`;
+        return;
+    }
+
+    // Do not combine
     let now = new Date();
-    document.getElementById('chat-display').innerHTML += `${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg} <br>`;
+    document.getElementById('chat-display').innerHTML += `<br>${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg}`;
 }
 
 
