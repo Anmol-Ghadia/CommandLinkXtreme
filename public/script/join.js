@@ -35,6 +35,7 @@ async function doJoin() {
     }
     window.localStorage.setItem('alias',alias);
 
+    window.location.href='/chat';
 }
 
 // ================= HELPERS =================

@@ -11,6 +11,7 @@ let PRIVATEKEY = '';
 let LASTMESSAGETIME = 0;
 let LASTMESSAGEBY = ''; // store alias here
 let CONTINUENEXTMESSAGE = false;
+let SESSIONID = 0;
 
 connectWS();
 function connectWS() {
@@ -98,16 +99,25 @@ function handleExit() {
 
 
 async function sendM1(socket) {
+
+    SESSIONID = parseInt(window.localStorage.getItem('sessionId'));
+    if (isNaN(SESSIONID) || typeof SESSIONID !== 'number') {
+        displayNotification('error in session id');
+        return;
+    }
+    ALIAS = window.localStorage.getItem('alias');
+    if (typeof ALIAS !== 'string') {
+        displayNotification('error in alias');
+        return;
+    }
     const keyPair = await generateKeyPair();
 
     PUBLICKEY = JSON.stringify(await exportPublicKey(keyPair.publicKey));
     PRIVATEKEY = keyPair.privateKey;
 
-    let random = Math.floor(Math.random()*100);
-    ALIAS = `alice${random}`;
     let message = {
         command: 'JOIN',
-        sessionId: 990011,
+        sessionId: SESSIONID,
         key: PUBLICKEY,
         alias: ALIAS
     }
@@ -201,7 +211,8 @@ async function handleStateChangeFrom4(message) {
         case 'JOIN': // R6J
             // TODO !!! new client joined
             CURRENTSTATE = 5;
-            SESSION_CLIENTS.push([message.alias,message.key]);
+            let publicKey = await importPublicKey(JSON.parse(message.key))
+            SESSION_CLIENTS.push([message.alias,publicKey]);
             console.log('MESAGE JOIN received');
             displayNotification(`received join message, ${message.alias} joined`);
             sendM3Join(message.alias);
@@ -259,13 +270,13 @@ async function handleStateChangeFrom2(message) {
             // Wait for user
             console.log('waiting for users to join');
             displayNotification('Alone in the session, waiting for users to join');
-            addMessage('SERVER',`joined as ${ALIAS}`);
+            addMessage('SERVER',`joined as ${ALIAS} on session: ${SESSIONID}`);
             // TODO !!!
             CURRENTSTATE = 3
             break;
         case 'E-JN': // Check the message TODO !!!
             // joined a session with other people
-            addMessage('SERVER',`joined as ${ALIAS}`);
+            addMessage('SERVER',`joined as ${ALIAS} on session: ${SESSIONID}`);
             let userAliases = '';
             for (let index = 0; index < message['payload'].length; index++) {
                 const pair = message['payload'][index];
