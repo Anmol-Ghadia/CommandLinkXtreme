@@ -34,6 +34,14 @@ app.get("/chat", (req: Request, res: Response) => {
 	res.render('chat', {});
 });
 
+
+// Returns a 9 digit session id, returns 0 if error
+app.get("/create/session", (req: Request, res: Response) => {
+	res.json({
+		sessionId: ALLSESSIONS.getUniqueSessionId()
+	});
+});
+
 // Body Parser for nodemailer 
 app.use(bodyParser.json());
 

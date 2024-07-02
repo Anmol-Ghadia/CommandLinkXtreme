@@ -83,4 +83,31 @@ export class AllSessions {
         }
         session.removeClient(client);
     }
+
+    // returns a unique session id
+    getUniqueSessionId(): number {
+        let maxAttempts = 10;
+        let count = 0
+        while (maxAttempts > count) {
+            let random = Math.floor(Math.random()*1_000_000_000);
+            if (random < 99_999_999) continue;
+            if (!this.sessionIdExits(random)) {
+                return random;
+            }
+            count++;
+        }
+        log(0,'ALL-SESSIONS',`unable to find a unique id with ${maxAttempts}`)
+        return 0;
+    }
+
+
+    private sessionIdExits(checkId:number):boolean {
+        for (let index = 0; index < this.clientSessionPairs.length; index++) {
+            const pair = this.clientSessionPairs[index];
+            if (pair[1].getSessionId() == checkId) {
+                return true;       
+            }
+        }
+        return false;
+    }
 }
