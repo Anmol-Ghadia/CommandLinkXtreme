@@ -6,7 +6,7 @@ const EMAIL_PASS = process.env.EMAIL_PASS;
 
 // create reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
-    service: 'outlook', 
+    service: 'outlook',
     auth: {
         user: EMAIL_SENDER,
         pass: EMAIL_PASS,

@@ -311,8 +311,11 @@ Many states were explicitly stated in `Scenario 1`, but in practice they would b
     ```py
     EMAIL_SENDER=# email id that server will use to notify users
     EMAIL_PASS=# password of the email id in above line
-    LOG_LEVEL=# level of logging, defaults to 2(All) otherwise specify 0,1,2
 
+    ### Optional Environment vriables below this
+    LOG_LEVEL=# level of logging, defaults to 2(All) otherwise specify 0,1,2
+    SERVER_PORT=# port of server, defaults to 300
+    WS_SERVER_PORT=# port of websocket server, defaults to 8080
     ```
 1) To instal `node_modules`
     ```BASH

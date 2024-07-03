@@ -1,4 +1,4 @@
-import { log } from "../logger";
+import { log } from "../helpers/logger";
 import { Client } from "./Client";
 import { Session } from "./Session";
 import { message1 } from "./Protocol";
@@ -8,7 +8,7 @@ import { message1 } from "./Protocol";
 //    only works with session class which is one level below
 export class AllSessions {
     private unInitializedClients: Client[];
-    private clientSessionPairs: [Client,Session][];
+    private clientSessionPairs: [Client, Session][];
 
     constructor() {
         this.unInitializedClients = [];
@@ -16,16 +16,16 @@ export class AllSessions {
     }
 
     // adds a new client to unInitialized list
-    addClient(newClient:Client) {
+    addClient(newClient: Client) {
         this.unInitializedClients.push(newClient);
     }
-    
+
     // REQUIRES message is well formed
     // upgrades client from unInitialized list initialized
-    // returns true if not succesfull
-    promoteClient(clientToPromote:Client,message:message1): boolean {
-        clientToPromote.initialize(message.alias,message.key);
-        let newList:Client[] = [];
+    // returns false if not succesfull
+    promoteClient(clientToPromote: Client, message: message1): boolean {
+        clientToPromote.initialize(message.alias, message.key);
+        let newList: Client[] = [];
         for (let index = 0; index < this.unInitializedClients.length; index++) {
             const unInitializedClient = this.unInitializedClients[index];
             if (unInitializedClient.getClientId() != clientToPromote.getClientId()) {
@@ -35,26 +35,26 @@ export class AllSessions {
         this.unInitializedClients = newList;
         const session = this.getSession(message.sessionId);
         if (!session.addClient(clientToPromote)) return false;
-        this.clientSessionPairs.push([clientToPromote,session]);
+        this.clientSessionPairs.push([clientToPromote, session]);
         return true;
     }
 
     // gets the session if exists else creates new one
     getSession(sessionId: number): Session {
         for (let index = 0; index < this.clientSessionPairs.length; index++) {
-            const pair = this.clientSessionPairs[index];   
+            const pair = this.clientSessionPairs[index];
             if (pair[1].getSessionId() == sessionId) {
-                log(1,'ALL-SESSION',`request to join old session ${sessionId}`);
+                log(2, 'ALL-SESSION', `request to join old session ${sessionId}`);
                 return pair[1];
             }
         }
-        log(1,'ALL-SESSION',`request to join new session ${sessionId}`);
+        log(2, 'ALL-SESSION', `request to join new session ${sessionId}`);
         return new Session(sessionId);
     }
 
     // Returns the session in which the given client is present
     //  if client is not in a session, returns null
-    getClientsSession(client:Client) : Session | null {
+    getClientsSession(client: Client): Session | null {
         for (let index = 0; index < this.clientSessionPairs.length; index++) {
             const pair = this.clientSessionPairs[index];
             if (pair[0].getClientId() == client.getClientId()) {
@@ -81,7 +81,7 @@ export class AllSessions {
         // Client is part of a session
         let session = this.getClientsSession(client);
         if (session == null) {
-            log(1,'ALL-SESSION',`client: ${client.getAlias()}(${client.getClientId()}) not found in any list`);
+            log(1, 'ALL-SESSION', `not found client: ${client.getAlias()}(${client.getClientId()}) in any list`);
             return;
         }
         session.removeClient(client);
@@ -92,43 +92,49 @@ export class AllSessions {
         let maxAttempts = 10;
         let count = 0
         while (maxAttempts > count) {
-            let random = Math.floor(Math.random()*1_000_000_000);
+            let random = Math.floor(Math.random() * 1_000_000_000);
             if (random < 99_999_999) continue;
             if (!this.sessionIdExits(random)) {
                 return random;
             }
             count++;
         }
-        log(0,'ALL-SESSIONS',`unable to find a unique id with ${maxAttempts}`)
+        log(0, 'ALL-SESSIONS', `unable to find a unique id with ${maxAttempts}`)
         return 0;
     }
 
     // Returns true if a session with the given id exists
-    sessionIdExits(checkId:number):boolean {
+    sessionIdExits(checkId: number): boolean {
         for (let index = 0; index < this.clientSessionPairs.length; index++) {
             const pair = this.clientSessionPairs[index];
             if (pair[1].getSessionId() == checkId) {
-                return true;       
+                return true;
             }
         }
         return false;
     }
 
+    // returns true if the alias is in use in the given session
+    clientAliasExists(sessionId: number, alias: string): boolean {
+        if (!this.sessionIdExits(sessionId)) return false;
+        return this.getSession(sessionId).containsAlias(alias);
+    }
+
     // Logs the contents of all sessions
     logSession() {
-        log(2,'DUMP','='.repeat(15));
+        log(2, 'DUMP', '='.repeat(15));
         // uninitialized clients
-        log(2,'DUMP',`number of un-initialized clients: ${this.unInitializedClients.length}`);
+        log(2, 'DUMP', `number of un-initialized clients: ${this.unInitializedClients.length}`);
         for (let index = 0; index < this.unInitializedClients.length; index++) {
             const client = this.unInitializedClients[index];
-            log(2,'DUMP',`un-initialized client #${index}: ${client.getAlias()}(ID:${client.getClientId()})`);
+            log(2, 'DUMP', `un-initialized client #${index}: ${client.getAlias()}(ID:${client.getClientId()})`);
         }
 
         for (let index = 0; index < this.clientSessionPairs.length; index++) {
             const pair = this.clientSessionPairs[index];
-            log(2,'DUMP',`session: ${pair[1].getSessionId()}, has Client: ${pair[0].getAlias()}(ID:${pair[0].getClientId()}) in state ${pair[0].getCurrentState()}`);
+            log(2, 'DUMP', `session: ${pair[1].getSessionId()}, has Client: ${pair[0].getAlias()}(ID:${pair[0].getClientId()}) in state ${pair[0].getCurrentState()}`);
         }
 
-        log(2,'DUMP','='.repeat(15));
+        log(2, 'DUMP', '='.repeat(15));
     }
 }
