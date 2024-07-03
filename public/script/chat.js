@@ -1,5 +1,3 @@
-
-const wsLink = 'ws://localhost:8080';
 let socket;
 
 let CURRENTSTATE = 0;
@@ -13,8 +11,20 @@ let LASTMESSAGEBY = ''; // store alias here
 let CONTINUENEXTMESSAGE = false;
 let SESSIONID = 0;
 
-connectWS();
-function connectWS() {
+window.addEventListener('load',()=>{
+    fetch('/wss')
+    .then(res=>res.json())
+    .then(body=>{
+        if (typeof body.url === 'string' && body.url.length != 0) {
+            connectWS(body.url);
+        }
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+})
+
+function connectWS(wsLink) {
     console.log(`WS connected at: ${wsLink}`);
     socket = new WebSocket(wsLink);
     CURRENTSTATE = 1;
