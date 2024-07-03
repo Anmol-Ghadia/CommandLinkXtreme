@@ -8,8 +8,8 @@ window.localStorage.removeItem('alias');
 // ================= FUNCTIONS =================
 // handles form submit
 //  1) generate alias if empty
-//  2) send email if not empty
-//  3) get session id from server
+//  2) get session id from server
+//  3) send email if not empty
 //  exit if any step returns failure
 async function createSessionHandler() {
     let chosenAlias = document.getElementById('alias-input').value;
@@ -18,20 +18,20 @@ async function createSessionHandler() {
     }
     window.localStorage.setItem('alias', chosenAlias);
 
-    let chosenEmail = document.getElementById('email-input').value;
-    if (chosenEmail.length != 0) {
-        if (!await send(chosenEmail)) {
-            notifyUser('Error in sending email (CODE:100)')
-            return;
-        }
-    }
-
     let sessionId = await getId();
     if (sessionId == 0) {
         notifyUser('Error in generating Id (CODE:102)')
         return;
     }
     window.localStorage.setItem('sessionId', sessionId);
+
+    let chosenEmail = document.getElementById('email-input').value;
+    if (chosenEmail.length != 0) {
+        if (!await send(chosenAlias,chosenEmail,sessionId)) {
+            notifyUser('Error in sending email (CODE:100)')
+            return;
+        }
+    }
 
     goToChat();
 }
@@ -73,13 +73,17 @@ async function getId() {
 }
 
 // Sends email to server, returns true if success
-async function send(toEmail) {
+async function send(fromAlias,toEmail,sessionId) {
     let parameters = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ to: toEmail })
+        body: JSON.stringify({
+            from: fromAlias,
+            to: toEmail,
+            sessionId: sessionId
+        })
     }
 
     try {

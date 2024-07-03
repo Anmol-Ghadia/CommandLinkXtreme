@@ -2,16 +2,22 @@ import express, { Request, Response } from "express";
 
 let pageRouter = express.Router();
 
-pageRouter.get("/", routeFunction('index'));
-pageRouter.get("/join", routeFunction('join'));
-pageRouter.get("/create", routeFunction('create'));
-pageRouter.get("/chat", routeFunction('chat'));
+pageRouter.get("/", generalRouteFunction('index'));
+pageRouter.get("/join/:sessionId", joinHandler);
+pageRouter.get("/join", generalRouteFunction('join'));
+pageRouter.get("/create", generalRouteFunction('create'));
+pageRouter.get("/chat", generalRouteFunction('chat'));
+// pageRouter.get("/email", generalRouteFunction('email')); // Use for development
 
 // Helper function that returns a functino to respond with page
-function routeFunction(page: string) {
+function generalRouteFunction(page: string) {
     return (req: Request, res: Response) => {
         res.render(page, {});
     }
+}
+
+function joinHandler(req:Request,res:Response) {
+    res.render('join', {sessionId:req.params['sessionId']});
 }
 
 export default pageRouter;
