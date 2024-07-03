@@ -10,7 +10,7 @@ html
         main 
             h2 Join an existing session
             label(for="session") Session ID
-            input(type="text" name="session" id="session-id-input" required)
+            input(type="number" name="session" id="session-id-input" value=sessionId?sessionId:'' required)
             br
             label(for="alias") Alias
             input(type="text" name="alias" id="alias-input" placeholder='optional')

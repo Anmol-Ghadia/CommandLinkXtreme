@@ -223,8 +223,8 @@ function handleAllAlone(senderClient: Client) {
 	}
 
 	// update clients state: to be alone :(
-	log(1, 'SESSION', `Assuming that client:${senderClient.getClientId()} sent A-AL`);
 	senderClient.updateState(3);
+	log(2, 'CLIENT', `received A-AL from ${senderClient.getAlias()}(${senderClient.getClientId()})`);
 }
 
 // handles the client exit such that all references are cleared
