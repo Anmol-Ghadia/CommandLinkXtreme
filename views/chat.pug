@@ -1,16 +1,19 @@
 html 
     head 
         title="(chat) Command Link Extreme"
-        link(rel="stylesheet", href="/styles/landing.css")
+        link(rel="stylesheet", href="/styles/chat.css")
         script(src="/script/chat.js")  
     body
         header 
             h1 User2 Alias
         main 
-            label(for="message") Message:
-            input(type="text" name="message" id="input-text-area")
-            button#exit(onclick="sendM2()") Send
-            button#send(onclick="exitPage()") End Conversation and exist
-            div#display-notification notifications will be displayed here
-            div#chat-display
+            div.container
+                button#exit(onclick="exitPage()") End Conversation and exist
+                div#display-notification notifications will be displayed here
+                div#chat-display
+                div#messageControl
+
+                    //- label(for="message") Message:
+                    input(type="text" name="message" id="input-text-area")
+                    button#send(onclick="sendM2()") Send
         

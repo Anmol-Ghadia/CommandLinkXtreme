@@ -4,30 +4,26 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Command Link Extreme
-    link(rel="stylesheet", href="/styles/landing.css")
+    link(rel="stylesheet", href="/styles/create.css")
   body
     header
       h1 Command Link Extreme
-      p Start a new conversation or go back to the landing page.
+      p.description Start a new conversation or go back to the landing page.
     main
-      form#sessionForm
-        h2 Create a new session
+      div.container 
+        form#sessionForm
+          h2 Create a new session
+          
+          label(for="alias") Choose Alias
+          input(type="text" name="alias" id="alias-input" placeholder="optional")
+          
+          label(for="email") Enter email to send invitation
+          input(type="text" name="email" id="email-input" placeholder="blank to not invite")
 
-        label(for="alias")
-          | Choose Alias
-        input(type="text" name="alias" id="alias-input" placeholder="optional")
+          button#createSession(type="button" onclick="createSessionHandler()") Create
 
-        br
-        label(for="email")
-          | Enter email to send invitation
-        input(type="text" name="email" id="email-input" placeholder="blank to not invite")
-
-        br
-        button#createSession(type="button" onclick="createSessionHandler()") Create
-
-      br
-      button#joinSession(type="button" onclick="window.location.href='/join'") Join Session
-      button#startConversation(type="button" onclick="window.location.href='/'") Back to the landing page
+        button#joinSession(type="button" onclick="window.location.href='/join'") Join Session
+        button#backToLanding(type="button" onclick="window.location.href='/'") Back to the landing page
 
       div#notification-area
     script(src="/script/create.js")

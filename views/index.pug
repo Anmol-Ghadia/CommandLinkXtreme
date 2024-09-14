@@ -1,13 +1,13 @@
-html 
-    head 
-        title Command Link Extreme
-        link(rel="stylesheet", href="/styles/landing.css") 
-    body
-        header 
-            h1 Command Link Extreme
-            p An app that allows you to communicate securely using end-to-end encryption.
-        mian 
-            h2 Start a new conversation
-            button#startConversation(onclick="window.location.href='/create'") New Conversation
-
-            
+html
+  head
+    title Command Link Extreme
+    link(rel="stylesheet", href="/styles/landing.css")
+  body
+    header
+      h1 Command Link Extreme
+      div#appDescription
+        p.description An app that allows you to communicate securely using end-to-end encryption.
+    main
+      div.container
+        p.action-text Start a new conversation
+        button#startConversation(onclick="window.location.href='/create'") New Conversation
