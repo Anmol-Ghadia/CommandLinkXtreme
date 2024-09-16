@@ -37,12 +37,16 @@ p {
 
 /* Main Section Styling */
 main {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
     background-color: #fff;
-    padding: 4vw 2vw;
+    padding: 3vw 1vw;
     border-radius: 1.2vw;
     box-shadow: 0px 0.8vw 2vw rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 45vw;
+    /* text-align: center; */
+    width: 60vw;
+    aspect-ratio: 2;
     /* max-width: 45vw; */
 }
 
@@ -50,6 +54,10 @@ main p.action-text {
     font-size: 2vw;
     color: #34495e;
     margin-bottom: 4vw;
+}
+
+main h2{ 
+    margin-left: 14vw;
 }
 
 button#startConversation {
@@ -78,3 +86,98 @@ footer p.footer-text {
     font-size: 1.8vw;
     color: #95a5a6;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+    /* align-items: right; */
+    /* align-items: center; */
+    width: 100%;
+    font-size: 1.85vw;
+}
+
+#aliasContainer{
+    display: flex;
+    flex-direction: row;
+    gap: 15%;
+    /* align-items: right;
+     */
+    justify-content: flex-end;
+}
+
+#aliasContainer input {
+    padding: 1vw;
+    border: 1px solid #bdc3c7;
+    border-radius: 1.2vw;
+    width: 55%;
+    aspect-ratio: 100;
+    font-size: 1rem;
+    /* justify-content: flex-end; */
+    /* align-items: right; */
+}
+
+#aliasContainer label {
+    padding: 1vw;
+}
+#emailContainer{
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    justify-content: flex-end;
+}
+
+#emailContainer label {
+    font-size: 1.75vw;  
+    padding-top: 1vw; 
+}
+
+#emailContainer input {
+    padding: 1vw;
+    border: 1px solid #bdc3c7;
+    border-radius: 1.2vw;
+    width: 55%;
+    aspect-ratio: 8.5;
+    font-size: 1rem;
+    /* justify-content: flex-end; */
+    /* align-items: right; */
+}
+
+#buttonsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+#createSessionContainer {
+    /* padding-left: 3vw; */
+
+    padding: 1vw;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 2vw;
+}
+#createSessionContainer button{
+    margin-top: 2vw;
+    padding: 1.5vw 2vw;
+    width: 30%;
+    align-items: center;
+    font-size: 1vw;
+    color: white;
+    border: none;
+    border-radius: 1.6vw;
+    cursor: pointer;
+    aspect-ratio: 9;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#createSession, #joinSession {
+    background-color: #3498db;
+}
+
+#backToLanding {
+    background-color: red;
+}
+

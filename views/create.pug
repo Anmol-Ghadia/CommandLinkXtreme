@@ -14,16 +14,20 @@ html(lang="en")
         form#sessionForm
           h2 Create a new session
           
-          label(for="alias") Choose Alias
-          input(type="text" name="alias" id="alias-input" placeholder="optional")
+          div#aliasContainer 
+            label(for="alias") Choose Alias
+            input(type="text" name="alias" id="alias-input" placeholder="optional")
           
-          label(for="email") Enter email to send invitation
-          input(type="text" name="email" id="email-input" placeholder="blank to not invite")
+          div#emailContainer
+            label(for="email") Enter email to send invitation
+            input(type="text" name="email" id="email-input" placeholder="blank to not invite")
 
-          button#createSession(type="button" onclick="createSessionHandler()") Create
-
+          
+      div#createSessionContainer
+        button#createSession(type="button" onclick="createSessionHandler()") Create
         button#joinSession(type="button" onclick="window.location.href='/join'") Join Session
         button#backToLanding(type="button" onclick="window.location.href='/'") Back to the landing page
+          
 
       div#notification-area
     script(src="/script/create.js")
