@@ -4,16 +4,14 @@ html
         link(rel="stylesheet", href="/styles/chat.css")
         script(src="/script/chat.js")  
     body
-        header 
-            h1 User2 Alias
-        main 
-            div.container
-                button#exit(onclick="exitPage()") End Conversation and exist
-                div#display-notification notifications will be displayed here
-                div#chat-display
-                div#messageControl
-
-                    //- label(for="message") Message:
-                    input(type="text" name="message" id="input-text-area")
-                    button#send(onclick="sendM2()") Send
+        main#container
+            div#top
+                button#exit(onclick="exitPage()") EXIT
+                div#display-notification 2 users online
+                div Show users
+            div#chat-display
+            div#messageControl
+                //- label(for="message") Message:
+                input(type="text" name="message" id="input-text-area")
+                button#send(onclick="sendM2()") Send
         

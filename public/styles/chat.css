@@ -6,96 +6,44 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
+    background-color: black;
+    background-image: 
+        /* radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%), */
+        radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    padding: 2vw;
 }
 
-/* Header Styling */
-header {
-    text-align: center;
-    margin-bottom: 3vw;
+#container {
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 4vh;
+    background-color: rgba(255,255,255,0.125);
+    width: 97.5vh;
+    height: 90vh;
+    display: grid;
+    grid-template-rows: 5% auto 5%;
+    padding: 2vh;
 }
 
-header h1 {
-    font-size: 4vw; /* Changed font size to vw for responsiveness */
-    color: #2c3e50;
-    font-weight: 700;
+#messageControl {
+    display: grid;
+    grid-template-columns: auto 10%;
 }
 
-
-/* Main Section Styling */
-main {
-    background-color: #fff;
-    padding: 4vw 2vw;
-    border-radius: 1.2vw;
-    box-shadow: 0px 0.8vw 2vw rgba(0, 0, 0, 0.1);
-    text-align: center;
-    height: 100%;
-    aspect-ratio: 1.4;
-    
-}
-
-main p.action-text {
-    font-size: 2vw;
-    color: #34495e;
-    margin-bottom: 4vw;
-}
-
-
-#chat-display{
-    height: 75%;
-    align-items: left;
-}
-
-#messageControl{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 2vw;
-}
-
-button#exit {
-    padding: 1.2vw 1.2vw; /* Increased padding for better scaling */
-    font-size: 1vw;
-    background-color: #e74c3c;
-    color: white;
+#messageControl button {
+    margin: 0px 5%;
+    border-radius: 100vh;
+    background-image: linear-gradient(to bottom left, #31193d , #61108c);
     border: none;
-    border-radius: 1.6vw;
-    display: flex;
-    justify-content: center;
-    width: 7vw;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    color: rgb(170,170,170);
+    font-size: 1.2rem;
 }
-button#send{
-    padding: 1.2vw 1.2vw; /* Increased padding for better scaling */
-    font-size: 1vw;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 1.6vw;
-    display: flex;
-    justify-content: center;
-    width: 12.5%;
-    cursor: pointer;
-    height: 90%;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
-}   
-#input-text-area{
-    width: 85%;
-    height: 90%;
-    /* height: 5vh; */
-    /* aspect-ratio:; */
-    border-radius: 1.6vw;
-    padding: 1vw;
-    font-size: 1.5vw;
+#messageControl  input {
+    border-radius: 100vh;
+    width: auto;
+    margin-right: 1vh;
+    border: none;
 }
+
