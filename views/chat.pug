@@ -1,16 +1,19 @@
 html 
     head 
+        link(rel="preconnect", href="https://fonts.googleapis.com")
+        link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin="")
+        link(href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap", rel="stylesheet")
         title="(chat) Command Link Extreme"
         link(rel="stylesheet", href="/styles/chat.css")
         script(src="/script/chat.js")  
     body
         main#container
             div#top
-                button#exit(onclick="exitPage()") EXIT
-                div#display-notification 2 users online
-                div Show users
-            div#chat-display
-            div#messageControl
+                button#exit(onclick="exitPage()") Exit
+                div#onlineInfo 2 users online
+                div#userListButton Show users
+            div#chatDisplay
+            div#newInputForm
                 //- label(for="message") Message:
                 input(type="text" name="message" id="input-text-area")
                 button#send(onclick="sendM2()") Send

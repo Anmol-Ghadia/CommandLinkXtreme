@@ -1,3 +1,22 @@
+.roboto-flex-300 {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0,
+      "wdth" 100,
+      "GRAD" 0,
+      "XOPQ" 96,
+      "XTRA" 468,
+      "YOPQ" 79,
+      "YTAS" 750,
+      "YTDE" -203,
+      "YTFI" 738,
+      "YTLC" 514,
+      "YTUC" 712;
+}
+
 /* Basic reset */
 * {
     margin: 0;
@@ -6,6 +25,7 @@
 }
 
 body {
+    font-family: "Roboto Flex", sans-serif;
     background-color: black;
     background-image: 
         /* radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%), */
@@ -13,6 +33,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    color: white;
+}
+
+button {
+    border-radius: 100vh;
+    border: none;
+    font-size: 1.3rem;
 }
 
 #container {
@@ -26,24 +53,65 @@ body {
     padding: 2vh;
 }
 
-#messageControl {
+#top {
+    display: grid;
+    grid-template-columns: 20% auto 20%;
+}
+
+#exit {
+    background-image: linear-gradient(to top right, #882323 , #3d170d);
+    color: rgb(170,170,170);
+    /* background-color: #ee5c39; */
+}
+
+#onlineInfo {
+    background-color: transparent;
+    margin: 0px 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    border-radius: 100vh;
+    /* text-align: center; */
+}
+
+#userListButton {
+    border-radius: 100vh;
+    background-image: linear-gradient(to bottom left, #31193d , #61108c);
+    color: rgb(170,170,170);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+}
+
+#chatDisplay {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#newInputForm {
     display: grid;
     grid-template-columns: auto 10%;
 }
 
-#messageControl button {
+#newInputForm button {
     margin: 0px 5%;
-    border-radius: 100vh;
     background-image: linear-gradient(to bottom left, #31193d , #61108c);
-    border: none;
     color: rgb(170,170,170);
-    font-size: 1.2rem;
 }
 
-#messageControl  input {
+#newInputForm  input {
+    background-color: transparent;
+    border: none;
+    padding-left: 2vh;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    border: 2px solid rgba(255,255,255,0.4);
     border-radius: 100vh;
     width: auto;
     margin-right: 1vh;
-    border: none;
+    color: white;
 }
 

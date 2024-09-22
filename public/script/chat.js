@@ -14,6 +14,7 @@ let CONTINUENEXTMESSAGE = false;
 let SESSIONID = 0;
 
 connectWS();
+
 function connectWS() {
     console.log(`WS connected at: ${wsLink}`);
     socket = new WebSocket(wsLink);
@@ -77,7 +78,7 @@ function connectWS() {
 }
 
 function displayNotification(msg) {
-    document.getElementById('display-notification').innerHTML = msg;
+    document.getElementById('chatDisplay').innerHTML += '\n' + msg;
 }
 
 
@@ -314,19 +315,19 @@ function addMessage(from,msg) {
     // Check if params meet criteria to continue previous text
     if (cond1 && cond2 && cond3) {
         // Combine with previous message
-        document.getElementById('chat-display').innerHTML += msg;
+        document.getElementById('chatDisplay').innerHTML += msg;
         return;
     }
 
     // check if params meet the criteria to omit time and alias
     if (cond2 && cond3) {
-        document.getElementById('chat-display').innerHTML += `<br><u>${from}</u>:${msg}`;
+        document.getElementById('chatDisplay').innerHTML += `<br><u>${from}</u>:${msg}`;
         return;
     }
 
     // Do not combine
     let now = new Date();
-    document.getElementById('chat-display').innerHTML += `<br>${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg}`;
+    document.getElementById('chatDisplay').innerHTML += `<br>${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg}`;
 }
 
 
