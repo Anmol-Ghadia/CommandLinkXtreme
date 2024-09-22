@@ -8,13 +8,15 @@ html
         script(src="/script/chat.js")  
     body
         main#container
-            div#top
+            div#topBar
                 button#exit(onclick="exitPage()") Exit
                 div#onlineInfo 2 users online
                 div#userListButton Show users
-            div#chatDisplay
-            div#newInputForm
-                //- label(for="message") Message:
-                input(type="text" name="message" id="input-text-area")
-                button#send(onclick="sendM2()") Send
+            div#bottomBar
+                div#chatDisplay
+                div#newInputForm
+                    div#inputContainer
+                        textarea(type="text" rows="1"  name="message" id="input-text-area")
+                    div#sendContainer
+                        button#send(onclick="sendM2()") Send
         
