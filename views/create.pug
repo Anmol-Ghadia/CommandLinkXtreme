@@ -6,9 +6,6 @@ html(lang="en")
     title Command Link Extreme
     link(rel="stylesheet", href="/styles/create.css")
   body
-    header
-      h1 Command Link Extreme
-      p.description Start a new conversation or go back to the landing page.
     main
       div.container 
         form#sessionForm
@@ -24,9 +21,8 @@ html(lang="en")
 
           
       div#createSessionContainer
+        button#backToLanding(type="button" onclick="window.location.href='/'") Back
         button#createSession(type="button" onclick="createSessionHandler()") Create
-        button#joinSession(type="button" onclick="window.location.href='/join'") Join Session
-        button#backToLanding(type="button" onclick="window.location.href='/'") Back to the landing page
           
 
       div#notification-area
