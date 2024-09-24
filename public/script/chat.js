@@ -15,6 +15,24 @@ let SESSIONID = 0;
 
 connectWS();
 
+
+function computeTextAreaHeight() {
+    const field = document.getElementById('input-text-area');
+    field.style.height = 'auto';
+    field.style.height = `${field.scrollHeight}px`;
+}
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const textArea = document.getElementById('input-text-area');
+
+    textArea.addEventListener("keydown", function() {
+        computeTextAreaHeight();
+    });
+    textArea.addEventListener("keyup", function() {
+        computeTextAreaHeight();
+    });
+});
+
 function connectWS() {
     console.log(`WS connected at: ${wsLink}`);
     socket = new WebSocket(wsLink);

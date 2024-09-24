@@ -27,13 +27,16 @@
 body {
     font-family: "Roboto Flex", sans-serif;
     background-color: black;
-    background-image: 
-        /* radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%), */
-        radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%);
+    background-image: radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%), 
+                        radial-gradient(ellipse at 70% -40%, #2d108c, transparent 40%),
+                        radial-gradient(ellipse at 240% 0%, #fc4481, transparent 55%),
+                        radial-gradient(ellipse at -110% 80%, #ff7b00, transparent 50%),
+                        radial-gradient(ellipse at 35% 200%, #0ae754, transparent 45%);
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
+    overflow: hidden;
 }
 
 button {
@@ -49,11 +52,11 @@ button {
     width: 97.5vh;
     height: 90vh;
     display: grid;
-    grid-template-rows: 5% auto 5%;
+    grid-template-rows: 5% auto;
     padding: 2vh;
 }
 
-#top {
+#topBar {
     display: grid;
     grid-template-columns: 20% auto 20%;
 }
@@ -85,9 +88,36 @@ button {
     font-size: 1.3rem;
 }
 
+#bottomBar {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    max-height: 100%;
+}
+
 #chatDisplay {
-    overflow-y: scroll;
-    overflow-x: hidden;
+    margin: 2vh 0px;
+}
+
+/* width */
+#chatDisplay::-webkit-scrollbar {
+    width: 1vh;
+}
+
+/* Track */
+#chatDisplay ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+#chatDisplay::-webkit-scrollbar-thumb {
+    background: #490c6a;
+    border-radius: 2vh;
+}
+
+#chatDisplay::-webkit-scrollbar-thumb:hover {
+    background: #31193d;
+    cursor: grab;
 }
 
 #newInputForm {
@@ -95,23 +125,47 @@ button {
     grid-template-columns: auto 10%;
 }
 
-#newInputForm button {
+#sendContainer {
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+}
+
+#sendContainer button {
     margin: 0px 5%;
+    padding: 10%;
     background-image: linear-gradient(to bottom left, #31193d , #61108c);
     color: rgb(170,170,170);
+    width: 100%;
 }
 
-#newInputForm  input {
+#inputContainer {
     background-color: transparent;
     border: none;
-    padding-left: 2vh;
+    /* padding-left: 2vh; */
     display: flex;
-    /* justify-content: center; */
+    justify-content: center;
     align-items: center;
     border: 2px solid rgba(255,255,255,0.4);
-    border-radius: 100vh;
+    border-radius: 2vh;
     width: auto;
     margin-right: 1vh;
-    color: white;
+
 }
 
+textarea {
+    resize: none;
+    text-decoration: none;
+    font-family: "Roboto Flex", sans-serif;
+    width: 95%;
+    height: fit-content;
+    background-color: transparent;
+    color: white;
+    border: none;
+    font-size: 1.3rem;
+}
+
+textarea:focus,
+textarea:hover {
+    outline: none;
+}

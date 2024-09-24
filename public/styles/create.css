@@ -8,12 +8,12 @@
 body {
     font-family: 'Roboto', sans-serif;
     color: white;
+    background-color: black;
     background-image: radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%), 
                         radial-gradient(ellipse at 70% -40%, #2d108c, transparent 40%),
                         radial-gradient(ellipse at 240% 0%, #fc4481, transparent 55%),
                         radial-gradient(ellipse at -110% 80%, #ff7b00, transparent 50%),
                         radial-gradient(ellipse at 35% 200%, #0ae754, transparent 45%);
-    background-color: black;
     display: flex;
     flex-direction: column;
     justify-content: center;
