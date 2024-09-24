@@ -10,7 +10,10 @@ html
         main#container
             div#topBar
                 button#exit(onclick="exitPage()") Exit
-                div#onlineInfo 2 users online
+                div#activeBar
+                    div#onlineInfoSignal(data-active='0')
+                    span#onlineInfo 2
+                    span acitve user
                 div#userListButton Show users
             div#bottomBar
                 div#chatDisplay

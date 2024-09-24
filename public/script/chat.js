@@ -81,6 +81,7 @@ function connectWS() {
                 displayNotification(`unexpected or unimplemented command received`);
                 break;
         }
+        updateUserCount()
     });
 
     socket.addEventListener('close', function (event) {
@@ -115,7 +116,15 @@ function handleExit() {
     socket.close();
 }
 
-
+function updateUserCount() {
+    const clients_online = SESSION_CLIENTS.length + 1;
+    document.getElementById('onlineInfo').innerHTML = clients_online;
+    if (clients_online > 1) {
+        document.getElementById('onlineInfoSignal').dataset.active = '1'
+    } else {
+        document.getElementById('onlineInfoSignal').dataset.active = '0'
+    }
+}
 
 async function sendM1(socket) {
 

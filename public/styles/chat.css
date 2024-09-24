@@ -67,13 +67,44 @@ button {
     /* background-color: #ee5c39; */
 }
 
-#onlineInfo {
-    background-color: transparent;
-    margin: 0px 15%;
+#activeBar {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
+    column-gap: 1vh;
+    font-size: 1.3rem;
+}
+
+#onlineInfoSignal {
+    width: 0.5vh;
+    aspect-ratio: 1;
+    border-radius: 100%;
+    margin-right: 1vh;
+}
+
+#onlineInfoSignal[data-active='1'] {
+    background-color: greenyellow;
+    box-shadow: 
+        -5px -5px 10px greenyellow,
+        -5px  5px 10px greenyellow,
+         5px -5px 10px greenyellow,
+         5px  5px 10px greenyellow;
+}
+
+#onlineInfoSignal[data-active='0'] {
+    background-color: orange;
+    box-shadow: 
+        -5px -5px 10px orange,
+        -5px  5px 10px orange,
+         5px -5px 10px orange,
+         5px  5px 10px orange;
+}
+
+#onlineInfo {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 100vh;
     /* text-align: center; */
 }
