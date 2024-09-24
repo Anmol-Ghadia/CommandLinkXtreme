@@ -39,7 +39,7 @@ main {
 button {
     border-radius: 100vh;
     border: none;
-    font-size: 1.3vh;
+    font-size: 2vh;
 }
 
 main h2{ 
@@ -95,7 +95,7 @@ input {
 #emailContainer{
     display: flex;
     flex-direction: row;
-    gap: 5%;
+    gap:14.5%;
     justify-content: flex-end;
 }
 
