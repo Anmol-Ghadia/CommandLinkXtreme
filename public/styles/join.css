@@ -7,8 +7,13 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
+    color: white;
+    background-image: radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%), 
+                        radial-gradient(ellipse at 70% -40%, #2d108c, transparent 40%),
+                        radial-gradient(ellipse at 240% 0%, #fc4481, transparent 55%),
+                        radial-gradient(ellipse at -110% 80%, #ff7b00, transparent 50%),
+                        radial-gradient(ellipse at 35% 200%, #0ae754, transparent 45%);
+    background-color: black;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -17,107 +22,94 @@ body {
     padding: 2vw;
 }
 
-/* Header Styling */
-header {
-    text-align: center;
-    margin-bottom: 3vw;
-}
-
-header h1 {
-    font-size: 4vw; /* Changed font size to vw for responsiveness */
-    color: #2c3e50;
-    font-weight: 700;
-}
-
-p {
-    font-size: 1.5vw;
-    color: #7f8c8d;
-    margin-top: 1vw;
-}
-
 /* Main Section Styling */
 main {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: #fff;
+    align-items: left;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 4vh;
+    background-color: rgba(255,255,255,0.125);
     padding: 3vw 1vw;
-    border-radius: 1.2vw;
     box-shadow: 0px 0.8vw 2vw rgba(0, 0, 0, 0.1);
     width: 60vw;
     aspect-ratio: 2;
 }
 
-
-#join-session-container { 
+main h2 { 
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    gap: 10%;
-    font-size: 1.25rem;
-}
-#join-session-container input {
-    width: 70%;
-    padding: 1vw;
-    border: 1px solid #bdc3c7;
-    border-radius: 1.2vw;
-    font-size: 1.5vw;
-    margin-top: 1vw;
-}
-
-#alias-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    gap: 19.25%;
-    font-size: 1.25rem;
-}
-
-#alias-container input {
-    width: 70%;
-    padding: 1vw;
-    border: 1px solid #bdc3c7;
-    border-radius: 1.2vw;
-    font-size: 1.5vw;
-    margin-top: 1vw;
-}
-
-#button-container {
-    /* margin-top: 1vw; */
-    margin: 2vw;
-    display: flex;
-    flex-direction: row;
     justify-content: center;
+    font-size: 2vw;
+    margin-bottom: 2vw;
+}
+
+/* Session and Alias Inputs */
+#sessionContainer, #aliasContainer, #emailContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10%;
+    margin-bottom: 2vw;
+}
+
+#sessionContainer label, #aliasContainer label, #emailContainer label {
+    font-size: 1.75vw;
+    padding: 1vw;
+}
+
+#sessionContainer input, #aliasContainer input, #emailContainer input {
+    padding: 1vw;
+    border-radius: 100vh;
+    border: 1px solid #bdc3c7;
+    width: 55%;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+#buttonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
     gap: 10%;
 }
 
-#button-container button{
-    margin-top: 2vw;
-    padding: 1.5vw 2vw;
-    width: 4%;
-    align-items: center;
-    font-size: 1vw;
-    color: white;
+/* Button Styling */
+button {
+    border-radius: 100vh;
     border: none;
-    border-radius: 1.6vw;
+    font-size: 1.3vh;
+    padding: 1.5vw 2vw;
     cursor: pointer;
-    aspect-ratio: 9;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#joinSession {
-    background-color: #3498db;
-}
-
-#backToLandingPage {
-    background-color: red;
-}
-
-#joinSession:hover {
-    background-color: #2980b9;
+    color: white;
+    width: 45%; 
 }
 
 
+button#joinSession:hover {
+    box-shadow: 0px 2vw 4vw rgba(0, 0, 0, 0.1);
+}
+
+/* Back to Landing Button */
+button#joinSession {
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    background-image: linear-gradient(to bottom left, #31193d , #61108c);
+}
+
+button#backButton {
+    background-image: linear-gradient(to top right, #882323 , #3d170d);
+}
+
+button#backButton:hover {
+    box-shadow: 0px 2vw 4vw rgba(0, 0, 0, 0.1);
+}
+
+
+
+#createSession {
+    background-image: linear-gradient(to bottom left, #31193d , #61108c);
+}
 

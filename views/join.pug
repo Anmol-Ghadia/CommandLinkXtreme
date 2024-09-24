@@ -1,22 +1,24 @@
 html 
     head 
         title Command Link Extreme
-        link(rel="stylesheet", href="/styles/landing.css") 
+        link(rel="stylesheet", href="/styles/join.css") 
         script(src="/script/join.js")  
     body 
-        header 
-            h1 Command Link Extreme
-            p Join an existing session or go back to landing page.
         main 
             h2 Join an existing session
-            label(for="session") Session ID
-            input(type="number" name="session" id="session-id-input" value=sessionId?sessionId:'' required)
-            br
-            label(for="alias") Alias
-            input(type="text" name="alias" id="alias-input" placeholder='optional')
-            br
-            // on click to change to joinSession method in join.js
-            button#joinSession(onclick= "doJoin()") Join 
-        br
-        button#startConversation(onclick="window.location.href='/'") Back to landing page 
-        div#notification-area
+            form(action="/join-session", method="POST") 
+                div#sessionContainer
+                    label(for="session") Session ID
+                    input(type="number" name="session" id="session-id-input" value=sessionId?sessionId:'' required)
+                br
+                div#aliasContainer
+                    label(for="alias") Alias
+                    input(type="text" name="alias" id="alias-input" placeholder='optional')
+                br
+                div#emailContainer
+                    label(for="email") Email
+                    input(type="email" name="email" id="email-input" placeholder="required for updates" required)
+                br
+                div#buttonsContainer
+                    button#joinSession(onclick= "doJoin()") Join 
+                    button#backButton(onclick="window.location.href='/'") Back 
