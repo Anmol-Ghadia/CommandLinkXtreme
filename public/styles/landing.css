@@ -1,80 +1,214 @@
-/* Basic reset */
+/* Base styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Roboto Flex", sans-serif;
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
+    min-height: 100vh;
+    background-color: black;
+    background-image: radial-gradient(ellipse at 5% 120%, #61108c, transparent 40%), 
+                     radial-gradient(ellipse at 70% -40%, #2d108c, transparent 50%),
+                     radial-gradient(ellipse at 240% 0%, #fc4481, transparent 60%),
+                     radial-gradient(ellipse at -110% 80%, #ff7b00, transparent 50%),
+                     radial-gradient(ellipse at 35% 200%, #0ae754, transparent 35%);
+    background-size: 200% 200%;
+    animation: gradientFlow 15s ease infinite;
+    color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-    padding: 2vw;
+    justify-content: center;
+    overflow: hidden;
 }
 
-/* Header Styling */
-header {
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Enhanced Lock Animation */
+@keyframes lockShackle {
+    0% { transform: translateY(-100%); }
+    20% { transform: translateY(0); }
+    40% { transform: scale(1.1); }
+    50% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes lockBody {
+    0% { transform: scale(0.8); opacity: 0; }
+    20% { transform: scale(0.8); opacity: 0; }
+    40% { transform: scale(1.1); opacity: 1; }
+    60% { transform: scale(0.9); }
+    80% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes lockGlow {
+    0% { box-shadow: 0 0 10px #61108c; }
+    50% { box-shadow: 0 0 30px #61108c; }
+    100% { box-shadow: 0 0 10px #61108c; }
+}
+
+/* Refined Lock Animation */
+.lock-container {
+    width: 120px;
+    height: 160px;
+    
+    position: relative;
+    margin: 2rem auto;
+    display: flex;
+    justify-content: center;
+}
+
+.lock-shackle {
+    position: absolute;
+    top: 0;
+    width: 60px;
+    height: 70px;
+    border: 8px solid #61108c;
+    border-bottom: none;
+    border-radius: 30px 30px 0 0;
+    animation: lockShackle 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    z-index: 1;
+}
+
+.lock-body {
+    position: absolute;
+    bottom: 20px;
+    width: 80px;
+    height: 60px;
+    background: linear-gradient(45deg, #61108c, #8a2be2);
+    border-radius: 10px;
+    animation: lockBody 3s cubic-bezier(0.4, 0, 0.2, 1) infinite,
+               lockGlow 2s infinite;
+    z-index: 2;
+}
+
+/* Simplified Encryption Animation */
+@keyframes textScramble {
+    0% { 
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+    45% {
+        opacity: 0;
+        transform: translateY(0);
+        filter: blur(4px);
+    }
+    55% {
+        opacity: 0;
+        transform: translateY(0);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+.encryption-demo {
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    position: relative;
+    background: rgba(97, 16, 140, 0.1);
+    border-radius: 15px;
     text-align: center;
-    margin-bottom: 3vw;
 }
 
-header h1 {
-    font-size: 4vw; /* Changed font size to vw for responsiveness */
-    color: #2c3e50;
-    font-weight: 700;
+.text-transform {
+    font-size: 1.4rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-#appDescription p.description {
-    font-size: 1.5vw;
-    color: #7f8c8d;
-    margin-top: 1vw;
+.message {
+    position: absolute;
+    width: 100%;
+    animation: textScramble 4s infinite;
 }
 
-/* Main Section Styling */
-main {
-    background-color: #fff;
-    padding: 4vw 2vw;
-    border-radius: 1.2vw;
-    box-shadow: 0px 0.8vw 2vw rgba(0, 0, 0, 0.1);
+/* Enhanced Container and Buttons */
+.container {
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(97, 16, 140, 0.3);
+    padding: 3rem;
+    width: 100%;
+    max-width: 600px;  /* Increased from 500px */
     text-align: center;
-    width: 45vw;
-    /* max-width: 45vw; */
+    position: relative;
+    box-shadow: 0 0 40px rgba(97, 16, 140, 0.2);
 }
 
-main p.action-text {
-    font-size: 2vw;
-    color: #34495e;
-    margin-bottom: 4vw;
+.button-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding: 1rem;
 }
 
-button#startConversation {
-    padding: 2vw 3vw; /* Increased padding for better scaling */
-    font-size: 1.5vw;
-    background-color: #3498db;
+button {
+    padding: 1.2rem 3rem;  /* Increased padding */
+    font-size: 1.3rem;     /* Increased font size */
+    font-weight: 500;
     color: white;
+    background: linear-gradient(45deg, #31193d, #61108c);
     border: none;
-    border-radius: 1.6vw;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-width: 200px;      /* Added minimum width */
 }
 
-button#startConversation:hover {
-    background-color: #2980b9;
-    box-shadow: 0px 2vw 4vw rgba(0, 0, 0, 0.1);
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: 0.5s;
 }
 
-/* Footer */
-footer {
-    margin-top: 4vw;
-    text-align: center;
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(97, 16, 140, 0.4);
 }
 
-footer p.footer-text {
-    font-size: 1.8vw;
-    color: #95a5a6;
+button:hover::before {
+    left: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 2rem;
+    }
+    
+    .button-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    button {
+        width: 100%;
+        padding: 1rem 2rem;
+    }
 }

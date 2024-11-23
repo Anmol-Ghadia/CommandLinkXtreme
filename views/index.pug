@@ -2,13 +2,40 @@ html
   head
     title Command Link Extreme
     link(rel="stylesheet", href="/styles/landing.css")
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin="")
+    link(href="https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;500;700&display=swap", rel="stylesheet")
   body
     header
       h1 Command Link Extreme
-      div#appDescription
-        p.description An app that allows you to communicate securely using end-to-end encryption.
+
+    div.lock-container
+      div.lock-shackle
+      div.lock-body
+
+    div.encryption-demo
+      div.text-transform
+        div.message#originalMessage Your messages are protected
+
     main
       div.container
-        p.action-text Start a new conversation
-        button#startConversation(onclick="window.location.href='/create'") Create Session
-        button#startConversation(onclick="window.location.href='/join'") Join Session
+        div.button-container
+          button(onclick="window.location.href='/create'") Create Session
+          button(onclick="window.location.href='/join'") Join Session
+
+    script.
+      function generateGibberish(length) {
+        const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
+        return Array(length).fill(0).map(() => chars[Math.floor(Math.random() * chars.length)]).join('');
+      }
+
+      const message = document.getElementById('originalMessage');
+      const originalText = message.textContent;
+      
+      setInterval(() => {
+        if (message.textContent === originalText) {
+          message.textContent = generateGibberish(originalText.length);
+        } else {
+          message.textContent = originalText;
+        }
+      }, 4000);
