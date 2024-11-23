@@ -1,3 +1,4 @@
+// const { clear } = require("console");
 
 const wsLink = 'ws://localhost:8080';
 let socket;
@@ -22,7 +23,12 @@ function computeTextAreaHeight() {
     field.style.height = `${field.scrollHeight}px`;
 }
 
-  document.addEventListener('DOMContentLoaded', () => {
+function clearTextArea() {
+    document.getElementById('input-text-area').value = '';
+    computeTextAreaHeight();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
     const textArea = document.getElementById('input-text-area');
 
     textArea.addEventListener("keydown", function() {
@@ -355,6 +361,7 @@ function addMessage(from,msg) {
     // Do not combine
     let now = new Date();
     document.getElementById('chatDisplay').innerHTML += `<br>${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg}`;
+    clearTextArea();
 }
 
 
