@@ -1,0 +1,17 @@
+# Step 1: Use an official Node.js runtime as a base image
+FROM node:18-alpine
+
+# Step 2: Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Step 3: Copy package.json and package-lock.json first to install dependencies
+COPY package*.json ./
+
+# Step 4: Install dependencies (consider using --production flag for prod)
+RUN npm install
+
+# Step 5: Copy the rest of your application code into the container
+COPY . .
+
+# Step 7: Define the command to run your app
+CMD ["npm", "run", "start"]

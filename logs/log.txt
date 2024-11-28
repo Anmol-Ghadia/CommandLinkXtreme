@@ -1,0 +1,3 @@
+1732831515202 [SERVER]         (HIG)  : logging at level: 2
+1732831515245 [SERVER]         (HIG)  : WebSocket Server Live on ws://localhost:8080
+1732831515246 [SERVER]         (HIG)  : Server is running at http://localhost:3000
