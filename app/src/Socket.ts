@@ -11,7 +11,7 @@ let WSPort = 8080;
 if (typeof process.env.WS_SERVER_PORT != 'undefined') {
 	WSPort = parseInt(process.env.WS_SERVER_PORT);
 }
-const WSLink = `ws://localhost:${WSPort}`;
+const WSLink = 'ws://localhost/ws/';
 
 let ALLSESSIONS: AllSessions;
 const webSocketServer = new WebSocketServer({ port: WSPort }, () => {

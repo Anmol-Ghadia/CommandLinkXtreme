@@ -1,6 +1,6 @@
 // const { clear } = require("console");
 
-const wsLink = 'ws://localhost:8080';
+const wsLink = 'ws://localhost/ws/';
 let socket;
 
 let CURRENTSTATE = 0;

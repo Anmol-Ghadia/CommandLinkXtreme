@@ -1,4 +1,5 @@
-node_modules
-/dist
-.env
-log.txt
+app/node_modules
+app/dist
+app/.env
+app/logs/log.txt
+logs/log.txt

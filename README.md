@@ -306,6 +306,13 @@ Many states were explicitly stated in `Scenario 1`, but in practice they would b
 1) File transfer
 
 ### Developer Instructions
+1) Make docker.service is installed and running
+1) run the project by
+```sh
+$ docker-compose up -d --build
+```
+
+### Developer Instructions (OLD)
 
 1) Make `.env` file in the root of project directory.
     ```py
