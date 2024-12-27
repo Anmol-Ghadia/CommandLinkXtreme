@@ -51,12 +51,16 @@ button {
     background-color: rgba(255,255,255,0.125);
     width: 97.5vh;
     height: 90vh;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     grid-template-rows: 5% auto;
     padding: 2vh;
 }
 
 #topBar {
+    height: auto;
+    min-height: 5%;
+    width: 100%;
     display: grid;
     grid-template-columns: 20% auto 20%;
 }
@@ -119,39 +123,44 @@ button {
     font-size: 1.3rem;
 }
 
-#bottomBar {
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    max-height: 100%;
+#chatContainer {
+    flex-grow: 1;
+    margin: 2vh 0px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 1rem;
 }
 
 #chatDisplay {
-    margin: 2vh 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
 }
 
 /* width */
-#chatDisplay::-webkit-scrollbar {
+#chatContainer::-webkit-scrollbar {
     width: 1vh;
 }
 
 /* Track */
-#chatDisplay ::-webkit-scrollbar-track {
+#chatContainer ::-webkit-scrollbar-track {
     background: transparent;
 }
 
 /* Handle */
-#chatDisplay::-webkit-scrollbar-thumb {
+#chatContainer::-webkit-scrollbar-thumb {
     background: #490c6a;
     border-radius: 2vh;
 }
 
-#chatDisplay::-webkit-scrollbar-thumb:hover {
+#chatContainer::-webkit-scrollbar-thumb:hover {
     background: #31193d;
     cursor: grab;
 }
 
 #newInputForm {
+    height: auto;
+    min-height: 5%;
     display: grid;
     grid-template-columns: auto 10%;
 }
