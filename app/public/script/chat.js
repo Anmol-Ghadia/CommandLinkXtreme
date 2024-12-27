@@ -60,7 +60,7 @@ function connectWS() {
             case 2:
                 if (command != 'A-JN' && command != 'F-JN' && command != 'E-JN') {
                     console.log('unexpected response from the server (102)');
-                    displayNotification('Server mesbehaving (102)');
+                    displayMessage('Server mesbehaving (102)',true, null);
                     return;
                 }
                 await handleStateChangeFrom2(message);
@@ -68,7 +68,7 @@ function connectWS() {
             case 3:
                 if (command != 'JOIN') {
                     console.log('unexpected response from the server (103)');
-                    displayNotification('Server mesbehaving (103)');
+                    displayMessage('Server mesbehaving (103)',true,null);
                     return;
                 }
                 await handleStateChangeFrom3(message);
@@ -76,7 +76,7 @@ function connectWS() {
             case 4:
                 if (command != 'MESG' && command != 'LEAV' && command != 'JOIN') {
                     console.log('unexpected response from the server (104)');
-                    displayNotification('Server mesbehaving (104)');
+                    displayMessage('Server mesbehaving (104)',true,null);
                     return;
                 }
                 await handleStateChangeFrom4(message);
@@ -84,7 +84,7 @@ function connectWS() {
             default:
             
                 console.log('unexpected or unimplemented command received');
-                displayNotification(`unexpected or unimplemented command received`);
+                displayMessage(`unexpected or unimplemented command received`,true,null);
                 break;
         }
         updateUserCount()
@@ -101,11 +101,6 @@ function connectWS() {
     });
 
 }
-
-function displayNotification(msg) {
-    document.getElementById('chatDisplay').innerHTML += '\n' + msg;
-}
-
 
 function exitPage() {
     handleExit();
@@ -136,12 +131,12 @@ async function sendM1(socket) {
 
     SESSIONID = parseInt(window.localStorage.getItem('sessionId'));
     if (isNaN(SESSIONID) || typeof SESSIONID !== 'number') {
-        displayNotification('error in session id');
+        displayMessage('error in session id',true,null);
         return;
     }
     ALIAS = window.localStorage.getItem('alias');
     if (typeof ALIAS !== 'string') {
-        displayNotification('error in alias');
+        displayMessage('error in alias',true,null);
         return;
     }
     const keyPair = await generateKeyPair();
@@ -162,7 +157,7 @@ async function sendM1(socket) {
 async function sendM2() {
     const maxTextLengthForOnePacket = 125;
     if (CURRENTSTATE != 4) {
-        displayNotification('Not in state 4, hence cannot send message');
+        displayMessage('Not in state 4, hence cannot send message',true,null);
         return;
     }
     const text = document.getElementById('input-text-area').value
@@ -185,8 +180,8 @@ async function sendM2Helper(text) {
     }
     socket.send(JSON.stringify(message));
     console.log(`sent message ${message}`);
-    displayNotification(`message sent`);
-    addMessage('you',text);
+    displayMessage(`message sent`,true,null);
+    displayMessage(text,false,null);
 }
 
 async function generateEncryptedPayload(text) {
@@ -208,7 +203,7 @@ function sendM3Join(alias) {
     }
 
     socket.send(JSON.stringify(message));
-    addMessage('SERVER',`${alias} has joined the chat`);
+    displayMessage(`${alias} has joined the chat`,true,null);
 }
 
 function sendM3Leave(alias) {
@@ -218,7 +213,7 @@ function sendM3Leave(alias) {
     }
 
     socket.send(JSON.stringify(message));
-    addMessage('SERVER',`${alias} has left the chat`);
+    displayMessage(`${alias} has left the chat`,true,null);
 }
 
 function sendM4(alias) {
@@ -228,7 +223,7 @@ function sendM4(alias) {
     }
 
     socket.send(JSON.stringify(message));
-    addMessage('SERVER',`${alias} has left the chat`);
+    displayMessage(`${alias} has left the chat`,true,null);
 }
 
 async function handleStateChangeFrom4(message) { 
@@ -237,9 +232,9 @@ async function handleStateChangeFrom4(message) {
         case 'MESG':  // R5
             // decrypt the messge and display with timestam and alias
             const plainTextMessageReceived = await decryptMessage(message.message,PRIVATEKEY);
-            addMessage(message.from,plainTextMessageReceived);
+            displayMessage(plainTextMessageReceived,false,message.from);
             console.log('received a message');
-            displayNotification(`received a message from ${message.from}`);
+            displayMessage(`received a message from ${message.from}`,true,null);
             // No change in state
             break;
         case 'JOIN': // R6J
@@ -248,14 +243,14 @@ async function handleStateChangeFrom4(message) {
             let publicKey = await importPublicKey(JSON.parse(message.key))
             SESSION_CLIENTS.push([message.alias,publicKey]);
             console.log('MESAGE JOIN received');
-            displayNotification(`received join message, ${message.alias} joined`);
+            displayMessage(`received join message, ${message.alias} joined`,true,null);
             sendM3Join(message.alias);
             CURRENTSTATE = 4;
             break;
         case 'LEAV':// R6L
             // TODO !!!
             console.log('MESAGE LEAV received');
-            displayNotification(`received leave message`);
+            displayMessage(`received leave message`,true,null);
             SESSION_CLIENTS = SESSION_CLIENTS.filter((pair)=>{
                 return pair[0] !== message.alias;
             })
@@ -264,19 +259,19 @@ async function handleStateChangeFrom4(message) {
                 // Send M4
                 sendM4(message.alias);
                 CURRENTSTATE = 3;
-                addMessage('SERVER',`number of remaining users: ${SESSION_CLIENTS.length}`);
+                displayMessage(`number of remaining users: ${SESSION_CLIENTS.length}`,true,null);
                 return;
             }
             // more clients remaining after a given client leaves
             // Send M3
             sendM3Leave(message.alias);
-            addMessage('SERVER',`number of remaining users: ${SESSION_CLIENTS.length+1}`);
+            displayMessage(`number of remaining users: ${SESSION_CLIENTS.length+1}`,true,null);
             break;
     
         default:
             
             console.log('unexpected message in state 4');
-            displayNotification(`unexpected message in state 4`);
+            displayMessage(`unexpected message in state 4`,true,null);
             break;
     }   
     
@@ -286,8 +281,8 @@ async function handleStateChangeFrom3(message) {
     // Check the message TODO !!!
     const importedPublicKey = await importPublicKey(JSON.parse(message.key));
     SESSION_CLIENTS.push([message.alias,importedPublicKey]);
-    displayNotification(`user joined with alias: ${message.alias}`);
-    addMessage('SERVER',` ${message.alias} joined thr chat`);
+    displayMessage(`user joined with alias: ${message.alias}`,true,null);
+    displayMessage(` ${message.alias} joined thr chat`,true,null);
     CURRENTSTATE = 4;
 }
 
@@ -296,21 +291,21 @@ async function handleStateChangeFrom2(message) {
         case 'F-JN': // Check the message TODO !!!
             // ERROR in M1, try to connect again
             console.log('Try to connect again');
-            displayNotification('Failed to connect, please try again');
+            displayMessage('Failed to connect, please try again',true,null);
             // TODO !!!
             CURRENTSTATE = 1;
             break;
         case 'A-JN': // Check the message TODO !!!
             // Wait for user
             console.log('waiting for users to join');
-            displayNotification('Alone in the session, waiting for users to join');
-            addMessage('SERVER',`joined as ${ALIAS} on session: ${SESSIONID}`);
+            displayMessage('Alone in the session, waiting for users to join',true,null);
+            displayMessage(`joined as ${ALIAS} on session: ${SESSIONID}`,true,null);
             // TODO !!!
             CURRENTSTATE = 3
             break;
         case 'E-JN': // Check the message TODO !!!
             // joined a session with other people
-            addMessage('SERVER',`joined as ${ALIAS} on session: ${SESSIONID}`);
+            displayMessage(`joined as ${ALIAS} on session: ${SESSIONID}`,true,null);
             let userAliases = '';
             for (let index = 0; index < message['payload'].length; index++) {
                 const pair = message['payload'][index];
@@ -318,8 +313,8 @@ async function handleStateChangeFrom2(message) {
                 SESSION_CLIENTS.push([pair.alias,usersPublicKey]);
                 userAliases += pair.alias + ', ';
             }
-            addMessage('SERVER',`existing users are: ${userAliases}`);
-            displayNotification(`joined session with ${message['payload'].length} users`);
+            displayMessage(`existing users are: ${userAliases}`,true,null);
+            displayMessage(`joined session with ${message['payload'].length} users`,true,null);
             console.log(SESSION_CLIENTS);
             CURRENTSTATE = 4;
             break;
@@ -329,43 +324,40 @@ async function handleStateChangeFrom2(message) {
     }
 }
 
-function addMessage(from,msg) {
-    // Check params to combine text
-    let cond1 = CONTINUENEXTMESSAGE
-    let cond2 = Date.now() - LASTMESSAGETIME <= 5*1000;
-    let cond3 = LASTMESSAGEBY == from;
+// function addMessage(from,msg) {
+//     // Check params to combine text
+//     let cond1 = CONTINUENEXTMESSAGE
+//     let cond2 = Date.now() - LASTMESSAGETIME <= 5*1000;
+//     let cond3 = LASTMESSAGEBY == from;
 
-    // Update params for next addMessage call
-    LASTMESSAGEBY = from;
-    LASTMESSAGETIME = Date.now();
-    CONTINUENEXTMESSAGE = msg.length > 125;
+//     // Update params for next addMessage call
+//     LASTMESSAGEBY = from;
+//     LASTMESSAGETIME = Date.now();
+//     CONTINUENEXTMESSAGE = msg.length > 125;
 
-    // Remove the Continuation placeholder char from message
-    if (CONTINUENEXTMESSAGE) {
-        msg = msg.substring(0,125);
-    }
+//     // Remove the Continuation placeholder char from message
+//     if (CONTINUENEXTMESSAGE) {
+//         msg = msg.substring(0,125);
+//     }
 
-    // Check if params meet criteria to continue previous text
-    if (cond1 && cond2 && cond3) {
-        // Combine with previous message
-        document.getElementById('chatDisplay').innerHTML += msg;
-        return;
-    }
+//     // Check if params meet criteria to continue previous text
+//     if (cond1 && cond2 && cond3) {
+//         // Combine with previous message
+//         document.getElementById('chatDisplay').innerHTML += msg;
+//         return;
+//     }
 
-    // check if params meet the criteria to omit time and alias
-    if (cond2 && cond3) {
-        document.getElementById('chatDisplay').innerHTML += `<br><u>${from}</u>:${msg}`;
-        return;
-    }
+//     // check if params meet the criteria to omit time and alias
+//     if (cond2 && cond3) {
+//         document.getElementById('chatDisplay').innerHTML += `<br><u>${from}</u>:${msg}`;
+//         return;
+//     }
 
-    // Do not combine
-    let now = new Date();
-    document.getElementById('chatDisplay').innerHTML += `<br>${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg}`;
-    clearTextArea();
-}
-
-
-
+//     // Do not combine
+//     let now = new Date();
+//     document.getElementById('chatDisplay').innerHTML += `<br>${now.getHours()}:${now.getMinutes()}<br><u>${from}</u>:${msg}`;
+//     clearTextArea();
+// }
 
 async function generateKeyPair() {
     return { publicKey, privateKey } = await window.crypto.subtle.generateKey(
@@ -458,3 +450,90 @@ async function importPublicKey(jwk) {
     return key;
 }
 
+// all messages have content as string
+// messages sent by the server have serverSentTheMessage == true
+// messages sent by this user have senderName == null
+// messages sent by other user have senderName as string
+function displayMessage(content, serverSentTheMessage, senderName) {
+    
+    // Server sent this message
+    if (serverSentTheMessage) {
+        displayServerNotification(content)
+        return;
+    }
+
+    // this user sent the message
+    if (senderName === null) {
+        displaySentMessage(content);
+        return;
+    }
+
+    // regular message
+    displayUserMessage(content,senderName);
+}
+
+// displays the content (string) to user as server notification
+function displayServerNotification(content) {
+    // create notification element
+    const notification = document.createElement('div');
+    notification.classList.add('server-notification-container');
+    
+    const notificationContent = document.createElement('div');
+    notificationContent.classList.add('server-notification-content');
+    notificationContent.innerHTML = content;
+
+    notification.appendChild(notificationContent)
+
+    // display notification element
+    document.getElementById('chatDisplay').appendChild(notification)
+
+}
+
+// displays the message as sent by this user
+function displaySentMessage(content) {
+    // create message element
+    const message = document.createElement('div');
+    message.classList.add('message-sent-container');
+
+    const bubble = document.createElement('div');
+    bubble.classList.add('message-sent-bubble');
+
+    const messageContent = document.createElement('div');
+    messageContent.classList.add('message-sent-content');
+    messageContent.innerHTML = content;
+
+    bubble.appendChild(messageContent);
+    message.appendChild(bubble);
+
+    // display message element
+    document.getElementById('chatDisplay').appendChild(message)
+
+}
+
+// displays the content (string) to user as a user message
+function displayUserMessage(content,senderName) {
+    
+    // create message element
+    const message = document.createElement('div');
+    message.classList.add('message-received-container');
+    
+    const bubble = document.createElement('div');
+    bubble.classList.add('message-received-bubble');
+    
+    // create div for senders name
+    const messageSender = document.createElement('div');
+    messageSender.classList.add('message-received-sender');
+    messageSender.innerHTML = senderName;
+    
+    // create div for senders content
+    const messageContent = document.createElement('div');
+    messageContent.classList.add('message-received-content');
+    messageContent.innerHTML = content;
+    
+    bubble.appendChild(messageSender)
+    bubble.appendChild(messageContent)
+    message.appendChild(bubble)
+
+    // display message element
+    document.getElementById('chatDisplay').appendChild(message)
+}

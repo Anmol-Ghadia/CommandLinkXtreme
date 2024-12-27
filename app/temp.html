@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <main id="container">
+        <div id="topBar">
+            <button id="exit" onclick="exitPage()">
+                Exit</button>
+            <div id="activeBar">
+                <div id="onlineInfoSignal" data-active="1">
+
+                </div>
+                <span id="onlineInfo">
+                    2</span>
+                <span>
+                    acitve user</span>
+            </div>
+            <div id="userListButton">
+                Show users</div>
+        </div>
+        <div id="bottomBar">
+            <div id="chatDisplay">
+                <div class="server-notification-container">
+                    <div class="server-notification-content">
+                        Alone in the session, waiting for users to join
+                    </div>
+                </div>
+                <div class="server-notification-container">
+                    <div class="server-notification-content">
+                        joined as Finley on session: 586094594
+                    </div>
+                </div>
+                <div class="server-notification-container">
+                    <div class="server-notification-content">
+                        user joined with alias: Rowan
+                    </div>
+                </div>
+                <div class="server-notification-container">
+                    <div class="server-notification-content">
+                        Rowan joined thr chat
+                    </div>
+                </div>
+                <div class="message-received-container">
+                    <div class="message-received-bubble">
+                        <div class="message-received-sender">
+                            Rowan
+                        </div>
+                        <div class="message-received-content">
+                            abcdef
+                        </div>
+                    </div>
+                </div>
+                <div class="server-notification-container">
+                    <div class="server-notification-content">
+                        received a message from Rowan
+                    </div>
+                </div>
+                <div class="server-notification-container">
+                    <div class="server-notification-content">
+                        message sent
+                    </div>
+                </div>
+                <div class="message-sent-container">
+                    <div class="message-sent-bubble">
+                        <div class="message-sent-content">
+                            hie there,
+                            this is anmol</div>
+                    </div>
+                </div>
+                <div class="message-received-container">
+                    <div class="message-received-bubble">
+                        <div class="message-received-sender">
+                            Rowan
+                        </div>
+                        <div class="message-received-content">
+                            abcdef
+                        </div>
+                    </div>
+                </div>
+                <div class="server-notification-container">
+                    <div class="server-notification-content">
+                        received a message from Rowan
+                    </div>
+                </div>
+
+                <div id="newInputForm">
+                    <div id="inputContainer">
+                        <textarea type="text" rows="1" name="message" id="input-text-area" style="height: 48px;">
+
+    </textarea>
+                    </div>
+                    <div id="sendContainer">
+                        <button id="send" onclick="sendM2()">
+                            Send</button>
+                    </div>
+                </div>
+            </div>
+    </main>
+</body>
+
+<style>
+    /* Basic reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Roboto Flex", sans-serif;
+        background-color: black;
+        background-image: radial-gradient(ellipse at 5% 120%, #61108c, transparent 28%),
+            radial-gradient(ellipse at 70% -40%, #2d108c, transparent 40%),
+            radial-gradient(ellipse at 240% 0%, #fc4481, transparent 55%),
+            radial-gradient(ellipse at -110% 80%, #ff7b00, transparent 50%),
+            radial-gradient(ellipse at 35% 200%, #0ae754, transparent 45%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        overflow: hidden;
+        height: 100vh;
+    }
+
+    button {
+        border-radius: 100vh;
+        border: none;
+        font-size: 1.3rem;
+    }
+
+    #container {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4vh;
+        background-color: rgba(255, 255, 255, 0.125);
+        width: 97.5vh;
+        height: 90vh;
+        display: grid;
+        grid-template-rows: 5% auto;
+        padding: 2vh;
+    }
+
+    #topBar {
+        display: grid;
+        grid-template-columns: 20% auto 20%;
+    }
+
+    #exit {
+        background-image: linear-gradient(to top right, #882323, #3d170d);
+        color: rgb(170, 170, 170);
+        /* background-color: #ee5c39; */
+    }
+
+    #activeBar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: 1vh;
+        font-size: 1.3rem;
+    }
+
+    #onlineInfoSignal {
+        width: 0.5vh;
+        aspect-ratio: 1;
+        border-radius: 100%;
+        margin-right: 1vh;
+    }
+
+    #onlineInfoSignal[data-active='1'] {
+        background-color: greenyellow;
+        box-shadow:
+            -5px -5px 10px greenyellow,
+            -5px 5px 10px greenyellow,
+            5px -5px 10px greenyellow,
+            5px 5px 10px greenyellow;
+    }
+
+    #onlineInfoSignal[data-active='0'] {
+        background-color: orange;
+        box-shadow:
+            -5px -5px 10px orange,
+            -5px 5px 10px orange,
+            5px -5px 10px orange,
+            5px 5px 10px orange;
+    }
+
+    #onlineInfo {
+        background-color: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 100vh;
+        /* text-align: center; */
+    }
+
+    #userListButton {
+        border-radius: 100vh;
+        background-image: linear-gradient(to bottom left, #31193d, #61108c);
+        color: rgb(170, 170, 170);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.3rem;
+    }
+
+    #bottomBar {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        max-height: 100%;
+    }
+
+    #chatDisplay {
+        margin: 2vh 0px;
+    }
+
+    /* width */
+    #chatDisplay::-webkit-scrollbar {
+        width: 1vh;
+    }
+
+    /* Track */
+    #chatDisplay ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    /* Handle */
+    #chatDisplay::-webkit-scrollbar-thumb {
+        background: #490c6a;
+        border-radius: 2vh;
+    }
+
+    #chatDisplay::-webkit-scrollbar-thumb:hover {
+        background: #31193d;
+        cursor: grab;
+    }
+
+    #newInputForm {
+        display: grid;
+        grid-template-columns: auto 10%;
+    }
+
+    #sendContainer {
+        display: flex;
+        justify-content: end;
+        flex-direction: column;
+    }
+
+    #sendContainer button {
+        margin: 0px 5%;
+        padding: 10%;
+        background-image: linear-gradient(to bottom left, #31193d, #61108c);
+        color: rgb(170, 170, 170);
+        width: 100%;
+    }
+
+    #inputContainer {
+        background-color: transparent;
+        border: none;
+        /* padding-left: 2vh; */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 2vh;
+        width: auto;
+        margin-right: 1vh;
+
+    }
+
+    textarea {
+        resize: none;
+        text-decoration: none;
+        font-family: "Roboto Flex", sans-serif;
+        width: 95%;
+        height: fit-content;
+        background-color: transparent;
+        color: white;
+        border: none;
+        font-size: 1.3rem;
+    }
+
+    textarea:focus,
+    textarea:hover {
+        outline: none;
+    }
+
+    .server-notification-container {
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .server-notification-content {
+        text-align: center;
+        border: 2px solid rgb(156, 121, 56);
+        width: 50%;
+        height: 90%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 1rem;
+    }
+
+    .message-received-container {
+        display: flex;
+        justify-content: start;
+        padding: 0.5rem 0px;
+        padding-left: 1rem;
+    }
+
+    .message-received-bubble {
+        background-color: #096126;
+        padding: 0.25rem 1rem;
+        border-radius: 0.75rem;
+        width: fit-content;
+        max-width: 40%;
+        position: relative;
+    }
+
+    .message-received-bubble::before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-top: 1rem solid transparent;
+        border-right: 1.65rem solid #096126;
+        left: -1rem;
+        bottom: 0.25rem;
+        transform: rotateZ(-20deg);
+    }
+
+    .message-received-sender {
+        color: #aaa;
+        font-size: 0.9rem;
+    }
+    .message-received-sender::before {
+        content: "~";
+        color: #aaa;
+        font-size: 0.9rem;
+    }
+
+    .message-received-content {}
+
+
+    .message-sent-container {
+        display: flex;
+        justify-content: end;
+        padding: 0.5rem 0px;
+        padding-right: 1rem;
+    }
+
+    .message-sent-content {
+        text-align: right;
+    }
+
+    .message-sent-bubble {
+        background-color: #b35600;
+        padding: 0.25rem 1rem;
+        border-radius: 0.75rem;
+        width: fit-content;
+        max-width: 40%;
+        position: relative;
+    }
+
+    .message-sent-bubble::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        right: -1rem;
+        bottom: 0.25rem;
+        border-top: 1rem solid transparent;
+        border-left: 1.65rem solid #b35600;
+        transform: rotateZ(20deg);
+    }
+</style>
+
+</html>
