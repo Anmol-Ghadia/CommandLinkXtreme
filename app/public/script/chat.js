@@ -13,9 +13,10 @@ let LASTMESSAGETIME = 0;
 let LASTMESSAGEBY = ''; // store alias here
 let CONTINUENEXTMESSAGE = false;
 let SESSIONID = 0;
+let DEBUG = false; // Set to true to see debug messages
+
 
 connectWS();
-
 
 function computeTextAreaHeight() {
     const field = document.getElementById('input-text-area');
@@ -40,13 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function connectWS() {
-    console.log(`WS connected at: ${wsLink}`);
+    if (DEBUG) console.log(`WS connected at: ${wsLink}`);
     socket = new WebSocket(wsLink);
     CURRENTSTATE = 1;
 
     // WebSocket event listeners
     socket.addEventListener('open', async function (event) {
-        console.log('WebSocket connection established.');
+        if (DEBUG) console.log('WebSocket connection established.');
         
         await sendM1(socket);
         CURRENTSTATE = 2;
@@ -54,7 +55,7 @@ function connectWS() {
 
     socket.addEventListener('message',async function (event) {
         let message = JSON.parse(event.data);
-        console.log('Message from server:', message);
+        if (DEBUG) console.log('Message from server:', message);
         let command = message.command;
         switch (CURRENTSTATE) {
             case 2:
@@ -67,7 +68,7 @@ function connectWS() {
                 break;
             case 3:
                 if (command != 'JOIN') {
-                    console.log('unexpected response from the server (103)');
+                    if (DEBUG) console.log('unexpected response from the server (103)');
                     displayMessage('Server mesbehaving (103)',true,null);
                     return;
                 }
@@ -91,8 +92,7 @@ function connectWS() {
     });
 
     socket.addEventListener('close', function (event) {
-        console.log('received close event from server');
-        console.log(event);
+        if (DEBUG) console.log('received close event from server');
         handleExit();
     });
 
@@ -113,7 +113,7 @@ function handleExit() {
     }
     socket.send(JSON.stringify(message));
 
-    console.log("socket Closed");
+    if (DEBUG) console.log("socket Closed");
     socket.close();
 }
 
@@ -179,8 +179,8 @@ async function sendM2Helper(text) {
         payload: await generateEncryptedPayload(text)
     }
     socket.send(JSON.stringify(message));
-    console.log(`sent message ${message}`);
-    displayMessage(`message sent`,true,null);
+    if (DEBUG) console.log(`sent message ${message}`);
+    if (DEBUG) displayMessage(`message sent`,true,null);
     displayMessage(text,false,null);
 }
 
@@ -233,8 +233,8 @@ async function handleStateChangeFrom4(message) {
             // decrypt the messge and display with timestam and alias
             const plainTextMessageReceived = await decryptMessage(message.message,PRIVATEKEY);
             displayMessage(plainTextMessageReceived,false,message.from);
-            console.log('received a message');
-            displayMessage(`received a message from ${message.from}`,true,null);
+            if (DEBUG) console.log('received a message');
+            if (DEBUG) displayMessage(`received a message from ${message.from}`,true,null);
             // No change in state
             break;
         case 'JOIN': // R6J
@@ -242,15 +242,15 @@ async function handleStateChangeFrom4(message) {
             CURRENTSTATE = 5;
             let publicKey = await importPublicKey(JSON.parse(message.key))
             SESSION_CLIENTS.push([message.alias,publicKey]);
-            console.log('MESAGE JOIN received');
-            displayMessage(`received join message, ${message.alias} joined`,true,null);
+            if (DEBUG) console.log('MESAGE JOIN received');
+            if (DEBUG) displayMessage(`received join message, ${message.alias} joined`,true,null);
             sendM3Join(message.alias);
             CURRENTSTATE = 4;
             break;
         case 'LEAV':// R6L
             // TODO !!!
-            console.log('MESAGE LEAV received');
-            displayMessage(`received leave message`,true,null);
+            if (DEBUG) console.log('MESAGE LEAV received');
+            if (DEBUG) displayMessage(`received leave message`,true,null);
             SESSION_CLIENTS = SESSION_CLIENTS.filter((pair)=>{
                 return pair[0] !== message.alias;
             })
@@ -259,13 +259,13 @@ async function handleStateChangeFrom4(message) {
                 // Send M4
                 sendM4(message.alias);
                 CURRENTSTATE = 3;
-                displayMessage(`number of remaining users: ${SESSION_CLIENTS.length}`,true,null);
+                if (DEBUG) displayMessage(`number of remaining users: ${SESSION_CLIENTS.length}`,true,null);
                 return;
             }
             // more clients remaining after a given client leaves
             // Send M3
             sendM3Leave(message.alias);
-            displayMessage(`number of remaining users: ${SESSION_CLIENTS.length+1}`,true,null);
+            if (DEBUG) displayMessage(`number of remaining users: ${SESSION_CLIENTS.length+1}`,true,null);
             break;
     
         default:
@@ -281,8 +281,7 @@ async function handleStateChangeFrom3(message) {
     // Check the message TODO !!!
     const importedPublicKey = await importPublicKey(JSON.parse(message.key));
     SESSION_CLIENTS.push([message.alias,importedPublicKey]);
-    displayMessage(`user joined with alias: ${message.alias}`,true,null);
-    displayMessage(` ${message.alias} joined thr chat`,true,null);
+    displayMessage(` ${message.alias} joined the chat`,true,null);
     CURRENTSTATE = 4;
 }
 
@@ -297,9 +296,9 @@ async function handleStateChangeFrom2(message) {
             break;
         case 'A-JN': // Check the message TODO !!!
             // Wait for user
-            console.log('waiting for users to join');
+            if (DEBUG) console.log('waiting for users to join');
             displayMessage('Alone in the session, waiting for users to join',true,null);
-            displayMessage(`joined as ${ALIAS} on session: ${SESSIONID}`,true,null);
+            if (DEBUG) displayMessage(`joined as ${ALIAS} on session: ${SESSIONID}`,true,null);
             // TODO !!!
             CURRENTSTATE = 3
             break;
@@ -313,9 +312,9 @@ async function handleStateChangeFrom2(message) {
                 SESSION_CLIENTS.push([pair.alias,usersPublicKey]);
                 userAliases += pair.alias + ', ';
             }
-            displayMessage(`existing users are: ${userAliases}`,true,null);
-            displayMessage(`joined session with ${message['payload'].length} users`,true,null);
-            console.log(SESSION_CLIENTS);
+            if (DEBUG) displayMessage(`existing users are: ${userAliases}`,true,null);
+            if (DEBUG) displayMessage(`joined session with ${message['payload'].length} users`,true,null);
+            if (DEBUG) console.log(SESSION_CLIENTS);
             CURRENTSTATE = 4;
             break;
     
